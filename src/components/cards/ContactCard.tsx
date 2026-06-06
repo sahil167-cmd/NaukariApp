@@ -2,11 +2,11 @@
  * WorkerConnect — Contact Card Component
  */
 
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useTheme } from '../../contexts/ThemeContext';
-import { spacing, borderRadius, shadows } from '../../theme/spacing';
-import { fontSize } from '../../theme/typography';
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useTheme } from "../../contexts/ThemeContext";
+import { spacing, borderRadius, shadows } from "../../theme/spacing";
+import { fontSize } from "../../theme/typography";
 
 interface ContactCardProps {
   icon: string;
@@ -41,14 +41,21 @@ const ContactCard: React.FC<ContactCardProps> = ({
       ]}
     >
       <View style={styles.content}>
-        <View style={[styles.iconContainer, { backgroundColor: theme.colors.surfaceVariant }]}>
+        <View
+          style={[
+            styles.iconContainer,
+            { backgroundColor: theme.colors.surfaceVariant },
+          ]}
+        >
           <Text style={styles.iconText}>{icon}</Text>
         </View>
         <View style={styles.textContainer}>
           <Text style={[styles.title, { color: theme.colors.textPrimary }]}>
             {title}
           </Text>
-          <Text style={[styles.description, { color: theme.colors.textSecondary }]}>
+          <Text
+            style={[styles.description, { color: theme.colors.textSecondary }]}
+          >
             {description}
           </Text>
         </View>
@@ -72,11 +79,11 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.lg,
     padding: spacing[4],
     marginBottom: spacing[4],
-    width: '100%',
+    width: "100%",
   },
   content: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: spacing[4],
     gap: spacing[4],
   },
@@ -84,8 +91,8 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: borderRadius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   iconText: {
     fontSize: 24,
@@ -96,7 +103,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.base,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   description: {
     fontSize: fontSize.sm,
@@ -105,12 +112,12 @@ const styles = StyleSheet.create({
   button: {
     height: 48,
     borderRadius: borderRadius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonText: {
     fontSize: fontSize.sm,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.5,
   },
 });
