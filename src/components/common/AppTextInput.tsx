@@ -3,7 +3,7 @@
  * Matches the cream-background input fields in Stitch design.
  */
 
-import React, { useState, forwardRef } from 'react';
+import React, { useState, forwardRef } from "react";
 import {
   View,
   TextInput as RNTextInput,
@@ -12,11 +12,11 @@ import {
   TouchableOpacity,
   TextInputProps,
   ViewStyle,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '../../contexts/ThemeContext';
-import { borderRadius, layout, spacing } from '../../theme/spacing';
-import { fontSize } from '../../theme/typography';
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../../contexts/ThemeContext";
+import { borderRadius, layout, spacing } from "../../theme/spacing";
+import { fontSize } from "../../theme/typography";
 
 interface AppTextInputProps extends TextInputProps {
   label?: string;
@@ -45,7 +45,7 @@ const AppTextInput = forwardRef<RNTextInput, AppTextInputProps>(
       secureTextEntry,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const { theme } = useTheme();
     const [isFocused, setIsFocused] = useState(false);
@@ -54,8 +54,8 @@ const AppTextInput = forwardRef<RNTextInput, AppTextInputProps>(
     const borderColor = error
       ? theme.colors.error
       : isFocused
-      ? theme.colors.inputBorderFocused
-      : theme.colors.inputBorder;
+        ? theme.colors.inputBorderFocused
+        : theme.colors.inputBorder;
 
     return (
       <View style={[styles.container, containerStyle]}>
@@ -105,10 +105,10 @@ const AppTextInput = forwardRef<RNTextInput, AppTextInputProps>(
             <TouchableOpacity
               onPress={() => setIsSecure((prev) => !prev)}
               style={styles.rightIconBtn}
-              accessibilityLabel={isSecure ? 'Show password' : 'Hide password'}
+              accessibilityLabel={isSecure ? "Show password" : "Hide password"}
             >
               <Ionicons
-                name={isSecure ? 'eye-off-outline' : 'eye-outline'}
+                name={isSecure ? "eye-off-outline" : "eye-outline"}
                 size={18}
                 color={theme.colors.textMuted}
               />
@@ -146,7 +146,7 @@ const AppTextInput = forwardRef<RNTextInput, AppTextInputProps>(
         )}
       </View>
     );
-  }
+  },
 );
 
 const styles = StyleSheet.create({
@@ -155,16 +155,16 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: fontSize.sm,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: spacing[1],
   },
   inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderRadius: borderRadius.md,
     borderWidth: 1.5,
     height: layout.inputHeight,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   leftIcon: {
     paddingLeft: spacing[4],
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: fontSize.base,
     paddingRight: spacing[4],
-    height: '100%',
+    height: "100%",
   },
   rightIconBtn: {
     padding: spacing[3],
@@ -191,6 +191,6 @@ const styles = StyleSheet.create({
   },
 });
 
-AppTextInput.displayName = 'AppTextInput';
+AppTextInput.displayName = "AppTextInput";
 
 export default AppTextInput;
