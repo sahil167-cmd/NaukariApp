@@ -2,12 +2,12 @@
  * WorkerConnect — Checkbox Component
  */
 
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '../../contexts/ThemeContext';
-import { spacing, borderRadius } from '../../theme/spacing';
-import { textStyles } from '../../theme/typography';
+import React from "react";
+import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../../contexts/ThemeContext";
+import { spacing, borderRadius } from "../../theme/spacing";
+import { textStyles } from "../../theme/typography";
 
 interface CheckboxProps {
   label: string;
@@ -16,7 +16,12 @@ interface CheckboxProps {
   disabled?: boolean;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({ label, checked, onChange, disabled = false }) => {
+const Checkbox: React.FC<CheckboxProps> = ({
+  label,
+  checked,
+  onChange,
+  disabled = false,
+}) => {
   const { colors } = useTheme();
 
   return (
@@ -36,7 +41,13 @@ const Checkbox: React.FC<CheckboxProps> = ({ label, checked, onChange, disabled 
           disabled && { opacity: 0.5 },
         ]}
       >
-        {checked && <Ionicons name="checkmark" size={16} color={colors.buttonPrimaryText} />}
+        {checked && (
+          <Ionicons
+            name="checkmark"
+            size={16}
+            color={colors.buttonPrimaryText}
+          />
+        )}
       </View>
       <Text
         style={[
@@ -53,8 +64,8 @@ const Checkbox: React.FC<CheckboxProps> = ({ label, checked, onChange, disabled 
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: spacing[2],
   },
   box: {
@@ -62,8 +73,8 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: borderRadius.sm,
     borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: spacing[3],
   },
   label: {
