@@ -2,7 +2,7 @@
  * WorkerConnect — Dropdown Component
  */
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,11 +11,11 @@ import {
   Modal,
   FlatList,
   Pressable,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '../../contexts/ThemeContext';
-import { spacing, borderRadius } from '../../theme/spacing';
-import { textStyles } from '../../theme/typography';
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../../contexts/ThemeContext";
+import { spacing, borderRadius } from "../../theme/spacing";
+import { textStyles } from "../../theme/typography";
 
 export interface DropdownOption {
   label: string;
@@ -36,7 +36,7 @@ export interface DropdownProps {
 const Dropdown: React.FC<DropdownProps> = ({
   label,
   value,
-  placeholder = 'Select',
+  placeholder = "Select",
   options,
   onSelect,
   error,
@@ -49,9 +49,11 @@ const Dropdown: React.FC<DropdownProps> = ({
   return (
     <View style={styles.container}>
       {label && (
-        <Text style={[styles.label, { color: colors.textSecondary }]}>{label}</Text>
+        <Text style={[styles.label, { color: colors.textSecondary }]}>
+          {label}
+        </Text>
       )}
-      
+
       <TouchableOpacity
         style={[
           styles.trigger,
@@ -66,19 +68,27 @@ const Dropdown: React.FC<DropdownProps> = ({
         <Text
           style={[
             styles.triggerText,
-            { color: selectedOption ? colors.inputText : colors.inputPlaceholder },
+            {
+              color: selectedOption
+                ? colors.inputText
+                : colors.inputPlaceholder,
+            },
           ]}
         >
           {selectedOption?.label || placeholder}
         </Text>
         <Ionicons
-          name={isOpen ? 'chevron-up' : 'chevron-down'}
+          name={isOpen ? "chevron-up" : "chevron-down"}
           size={20}
           color={colors.textMuted}
         />
       </TouchableOpacity>
 
-      {error && <Text style={[styles.error, { color: colors.inputError }]}>{error}</Text>}
+      {error && (
+        <Text style={[styles.error, { color: colors.inputError }]}>
+          {error}
+        </Text>
+      )}
 
       <Modal visible={isOpen} transparent animationType="fade">
         <Pressable style={styles.modalOverlay} onPress={() => setIsOpen(false)}>
@@ -91,18 +101,26 @@ const Dropdown: React.FC<DropdownProps> = ({
                   style={[
                     styles.option,
                     { borderBottomColor: colors.divider },
-                    item.value === value && { backgroundColor: colors.primaryLight },
+                    item.value === value && {
+                      backgroundColor: colors.primaryLight,
+                    },
                   ]}
                   onPress={() => {
                     onSelect?.(item.value);
                     setIsOpen(false);
                   }}
                 >
-                  <Text style={[styles.optionText, { color: colors.textPrimary }]}>
+                  <Text
+                    style={[styles.optionText, { color: colors.textPrimary }]}
+                  >
                     {item.label}
                   </Text>
                   {item.value === value && (
-                    <Ionicons name="checkmark" size={20} color={colors.primary} />
+                    <Ionicons
+                      name="checkmark"
+                      size={20}
+                      color={colors.primary}
+                    />
                   )}
                 </TouchableOpacity>
               )}
@@ -123,9 +141,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing[2],
   },
   trigger: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     height: 52,
     paddingHorizontal: spacing[4],
     borderRadius: borderRadius.md,
@@ -141,19 +159,19 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
     padding: spacing[5],
   },
   dropdown: {
     borderRadius: borderRadius.lg,
     maxHeight: 400,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   option: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: spacing[4],
     paddingHorizontal: spacing[5],
     borderBottomWidth: 1,
