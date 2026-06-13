@@ -2,12 +2,18 @@
  * WorkerConnect — RadioButton & Checkbox Components
  */
 
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '../../contexts/ThemeContext';
-import { borderRadius, spacing } from '../../theme/spacing';
-import { fontSize } from '../../theme/typography';
+import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ViewStyle,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../../contexts/ThemeContext";
+import { borderRadius, spacing } from "../../theme/spacing";
+import { fontSize } from "../../theme/typography";
 
 // ── RadioButton ───────────────────────────────────────────────────────────────
 
@@ -20,7 +26,11 @@ interface RadioButtonProps {
 }
 
 export const RadioButton: React.FC<RadioButtonProps> = ({
-  label, selected, onPress, containerStyle, testID,
+  label,
+  selected,
+  onPress,
+  containerStyle,
+  testID,
 }) => {
   const { theme } = useTheme();
   return (
@@ -40,10 +50,17 @@ export const RadioButton: React.FC<RadioButtonProps> = ({
         ]}
       >
         {selected && (
-          <View style={[styles.radioInner, { backgroundColor: theme.colors.primary }]} />
+          <View
+            style={[
+              styles.radioInner,
+              { backgroundColor: theme.colors.primary },
+            ]}
+          />
         )}
       </View>
-      <Text style={[styles.radioLabel, { color: theme.colors.textPrimary }]}>{label}</Text>
+      <Text style={[styles.radioLabel, { color: theme.colors.textPrimary }]}>
+        {label}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -60,13 +77,22 @@ interface RadioGroupProps {
 }
 
 export const RadioGroup: React.FC<RadioGroupProps> = ({
-  options, value, onChange, label, error, horizontal = false,
+  options,
+  value,
+  onChange,
+  label,
+  error,
+  horizontal = false,
 }) => {
   const { theme } = useTheme();
   return (
     <View style={styles.groupContainer}>
       {label && (
-        <Text style={[styles.groupLabel, { color: theme.colors.textSecondary }]}>{label}</Text>
+        <Text
+          style={[styles.groupLabel, { color: theme.colors.textSecondary }]}
+        >
+          {label}
+        </Text>
       )}
       <View style={[styles.group, horizontal && styles.groupHorizontal]}>
         {options.map((opt) => (
@@ -75,12 +101,16 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
             label={opt.label}
             selected={value === opt.value}
             onPress={() => onChange(opt.value)}
-            containerStyle={horizontal ? { marginRight: spacing[5] } : undefined}
+            containerStyle={
+              horizontal ? { marginRight: spacing[5] } : undefined
+            }
           />
         ))}
       </View>
       {error && (
-        <Text style={[styles.error, { color: theme.colors.error }]}>{error}</Text>
+        <Text style={[styles.error, { color: theme.colors.error }]}>
+          {error}
+        </Text>
       )}
     </View>
   );
@@ -97,7 +127,11 @@ interface CheckboxProps {
 }
 
 export const Checkbox: React.FC<CheckboxProps> = ({
-  label, checked, onPress, containerStyle, testID,
+  label,
+  checked,
+  onPress,
+  containerStyle,
+  testID,
 }) => {
   const { theme } = useTheme();
   return (
@@ -112,22 +146,24 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         style={[
           styles.checkBox,
           {
-            backgroundColor: checked ? theme.colors.primary : 'transparent',
+            backgroundColor: checked ? theme.colors.primary : "transparent",
             borderColor: checked ? theme.colors.primary : theme.colors.border,
           },
         ]}
       >
         {checked && <Ionicons name="checkmark" size={14} color="#FFF" />}
       </View>
-      <Text style={[styles.checkLabel, { color: theme.colors.textPrimary }]}>{label}</Text>
+      <Text style={[styles.checkLabel, { color: theme.colors.textPrimary }]}>
+        {label}
+      </Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   radioContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: spacing[3],
     minHeight: 44,
   },
@@ -136,8 +172,8 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 11,
     borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: spacing[3],
   },
   radioInner: {
@@ -149,15 +185,15 @@ const styles = StyleSheet.create({
   groupContainer: { marginBottom: spacing[4] },
   groupLabel: {
     fontSize: fontSize.sm,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: spacing[2],
   },
-  group: { flexDirection: 'column' },
-  groupHorizontal: { flexDirection: 'row', flexWrap: 'wrap' },
+  group: { flexDirection: "column" },
+  groupHorizontal: { flexDirection: "row", flexWrap: "wrap" },
   error: { fontSize: fontSize.xs, marginTop: spacing[1] },
   checkContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: spacing[3],
     minHeight: 44,
   },
@@ -166,8 +202,8 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: borderRadius.sm,
     borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: spacing[3],
   },
   checkLabel: { fontSize: fontSize.base, flex: 1 },
