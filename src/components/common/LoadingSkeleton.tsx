@@ -2,17 +2,17 @@
  * WorkerConnect — LoadingSkeleton (Shimmer Effect)
  */
 
-import React, { useEffect } from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import React, { useEffect } from "react";
+import { View, StyleSheet, ViewStyle } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withRepeat,
   withTiming,
   interpolateColor,
-} from 'react-native-reanimated';
-import { useTheme } from '../../contexts/ThemeContext';
-import { borderRadius, spacing } from '../../theme/spacing';
+} from "react-native-reanimated";
+import { useTheme } from "../../contexts/ThemeContext";
+import { borderRadius, spacing } from "../../theme/spacing";
 
 interface SkeletonBoxProps {
   width?: number | string;
@@ -22,7 +22,7 @@ interface SkeletonBoxProps {
 }
 
 export const SkeletonBox: React.FC<SkeletonBoxProps> = ({
-  width = '100%',
+  width = "100%",
   height = 16,
   borderRadiusValue = borderRadius.sm,
   style,
@@ -31,18 +31,14 @@ export const SkeletonBox: React.FC<SkeletonBoxProps> = ({
   const shimmer = useSharedValue(0);
 
   useEffect(() => {
-    shimmer.value = withRepeat(
-      withTiming(1, { duration: 1000 }),
-      -1,
-      true
-    );
+    shimmer.value = withRepeat(withTiming(1, { duration: 1000 }), -1, true);
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
     backgroundColor: interpolateColor(
       shimmer.value,
       [0, 1],
-      [theme.colors.shimmerBase, theme.colors.shimmerHighlight]
+      [theme.colors.shimmerBase, theme.colors.shimmerHighlight],
     ),
   }));
 
@@ -66,9 +62,21 @@ export const SkeletonBox: React.FC<SkeletonBoxProps> = ({
 export const JobCardSkeleton: React.FC = () => {
   const { theme } = useTheme();
   return (
-    <View style={[styles.card, { backgroundColor: theme.colors.cardBackground, borderColor: theme.colors.cardBorder }]}>
+    <View
+      style={[
+        styles.card,
+        {
+          backgroundColor: theme.colors.cardBackground,
+          borderColor: theme.colors.cardBorder,
+        },
+      ]}
+    >
       <View style={styles.cardHeader}>
-        <SkeletonBox width={44} height={44} borderRadiusValue={borderRadius.base} />
+        <SkeletonBox
+          width={44}
+          height={44}
+          borderRadiusValue={borderRadius.base}
+        />
         <View style={styles.cardHeaderText}>
           <SkeletonBox width="60%" height={14} />
           <SkeletonBox width="40%" height={12} style={{ marginTop: 6 }} />
@@ -77,8 +85,16 @@ export const JobCardSkeleton: React.FC = () => {
       <SkeletonBox width="80%" height={12} style={{ marginTop: 12 }} />
       <SkeletonBox width="50%" height={12} style={{ marginTop: 8 }} />
       <View style={styles.cardFooter}>
-        <SkeletonBox width={80} height={30} borderRadiusValue={borderRadius.full} />
-        <SkeletonBox width={100} height={30} borderRadiusValue={borderRadius.full} />
+        <SkeletonBox
+          width={80}
+          height={30}
+          borderRadiusValue={borderRadius.full}
+        />
+        <SkeletonBox
+          width={100}
+          height={30}
+          borderRadiusValue={borderRadius.full}
+        />
       </View>
     </View>
   );
@@ -92,8 +108,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing[3],
   },
   cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: spacing[3],
   },
   cardHeaderText: {
@@ -101,7 +117,7 @@ const styles = StyleSheet.create({
     gap: spacing[1],
   },
   cardFooter: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: spacing[2],
     marginTop: spacing[3],
   },
