@@ -3,17 +3,11 @@
  * Indian phone number input with +91 country code prefix.
  */
 
-import React, { forwardRef } from 'react';
-import {
-  View,
-  TextInput,
-  Text,
-  StyleSheet,
-  ViewStyle,
-} from 'react-native';
-import { useTheme } from '../../contexts/ThemeContext';
-import { borderRadius, layout, spacing } from '../../theme/spacing';
-import { fontSize } from '../../theme/typography';
+import React, { forwardRef } from "react";
+import { View, TextInput, Text, StyleSheet, ViewStyle } from "react-native";
+import { useTheme } from "../../contexts/ThemeContext";
+import { borderRadius, layout, spacing } from "../../theme/spacing";
+import { fontSize } from "../../theme/typography";
 
 interface PhoneInputProps {
   value: string;
@@ -32,8 +26,8 @@ const PhoneInput = forwardRef<TextInput, PhoneInputProps>(
     const borderColor = error
       ? theme.colors.error
       : isFocused
-      ? theme.colors.inputBorderFocused
-      : theme.colors.inputBorder;
+        ? theme.colors.inputBorderFocused
+        : theme.colors.inputBorder;
 
     return (
       <View style={[styles.container, containerStyle]}>
@@ -48,8 +42,15 @@ const PhoneInput = forwardRef<TextInput, PhoneInputProps>(
             { backgroundColor: theme.colors.inputBackground, borderColor },
           ]}
         >
-          <View style={[styles.prefix, { borderRightColor: theme.colors.inputBorder }]}>
-            <Text style={[styles.prefixText, { color: theme.colors.textPrimary }]}>
+          <View
+            style={[
+              styles.prefix,
+              { borderRightColor: theme.colors.inputBorder },
+            ]}
+          >
+            <Text
+              style={[styles.prefixText, { color: theme.colors.textPrimary }]}
+            >
               🇮🇳 +91
             </Text>
           </View>
@@ -57,7 +58,9 @@ const PhoneInput = forwardRef<TextInput, PhoneInputProps>(
             ref={ref}
             style={[styles.input, { color: theme.colors.inputText }]}
             value={value}
-            onChangeText={(t) => onChangeText(t.replace(/\D/g, '').slice(0, 10))}
+            onChangeText={(t) =>
+              onChangeText(t.replace(/\D/g, "").slice(0, 10))
+            }
             keyboardType="number-pad"
             placeholder="Enter mobile number"
             placeholderTextColor={theme.colors.inputPlaceholder}
@@ -65,49 +68,51 @@ const PhoneInput = forwardRef<TextInput, PhoneInputProps>(
             returnKeyType="done"
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            testID={testID ?? 'phone-input'}
-            accessibilityLabel={label ?? 'Mobile number'}
+            testID={testID ?? "phone-input"}
+            accessibilityLabel={label ?? "Mobile number"}
           />
         </View>
         {error && (
-          <Text style={[styles.error, { color: theme.colors.error }]}>{error}</Text>
+          <Text style={[styles.error, { color: theme.colors.error }]}>
+            {error}
+          </Text>
         )}
       </View>
     );
-  }
+  },
 );
 
 const styles = StyleSheet.create({
   container: { marginBottom: spacing[4] },
   label: {
     fontSize: fontSize.sm,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: spacing[1],
   },
   wrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     height: layout.inputHeight,
     borderRadius: borderRadius.md,
     borderWidth: 1.5,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   prefix: {
     paddingHorizontal: spacing[3],
     borderRightWidth: 1.5,
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   prefixText: {
     fontSize: fontSize.base,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   input: {
     flex: 1,
     paddingHorizontal: spacing[3],
     fontSize: fontSize.base,
-    height: '100%',
+    height: "100%",
   },
   error: {
     fontSize: fontSize.xs,
@@ -116,5 +121,5 @@ const styles = StyleSheet.create({
   },
 });
 
-PhoneInput.displayName = 'PhoneInput';
+PhoneInput.displayName = "PhoneInput";
 export default PhoneInput;
