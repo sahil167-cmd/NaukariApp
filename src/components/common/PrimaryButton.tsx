@@ -3,7 +3,7 @@
  * Orange filled CTA button matching Stitch design.
  */
 
-import React from 'react';
+import React from "react";
 import {
   TouchableOpacity,
   Text,
@@ -12,15 +12,15 @@ import {
   ViewStyle,
   TextStyle,
   Pressable,
-} from 'react-native';
+} from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
-} from 'react-native-reanimated';
-import { useTheme } from '../../contexts/ThemeContext';
-import { layout, borderRadius, spacing } from '../../theme/spacing';
-import { textStyles } from '../../theme/typography';
+} from "react-native-reanimated";
+import { useTheme } from "../../contexts/ThemeContext";
+import { layout, borderRadius, spacing } from "../../theme/spacing";
+import { textStyles } from "../../theme/typography";
 
 interface PrimaryButtonProps {
   title: string;
@@ -65,14 +65,18 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
       style={[
         animatedStyle,
         styles.button,
-        { backgroundColor: isDisabled ? theme.colors.divider : theme.colors.buttonPrimary },
+        {
+          backgroundColor: isDisabled
+            ? theme.colors.divider
+            : theme.colors.buttonPrimary,
+        },
         style,
       ]}
       onPress={onPress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       disabled={isDisabled}
-      testID={testID ?? 'primary-button'}
+      testID={testID ?? "primary-button"}
       accessibilityRole="button"
       accessibilityLabel={title}
       accessibilityState={{ disabled: isDisabled }}
@@ -83,7 +87,11 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
         <Text
           style={[
             styles.text,
-            { color: isDisabled ? theme.colors.textMuted : theme.colors.buttonPrimaryText },
+            {
+              color: isDisabled
+                ? theme.colors.textMuted
+                : theme.colors.buttonPrimaryText,
+            },
             textStyle,
           ]}
         >
@@ -98,10 +106,10 @@ const styles = StyleSheet.create({
   button: {
     height: layout.buttonHeight,
     borderRadius: borderRadius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: spacing[6],
-    width: '100%',
+    width: "100%",
   },
   text: {
     ...textStyles.button,
