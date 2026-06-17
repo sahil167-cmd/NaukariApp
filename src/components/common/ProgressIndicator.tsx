@@ -3,19 +3,19 @@
  * Horizontal step dots with connecting line.
  */
 
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import Animated, {
   useAnimatedStyle,
   withTiming,
   interpolateColor,
-} from 'react-native-reanimated';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from '../../contexts/ThemeContext';
-import { borderRadius, spacing } from '../../theme/spacing';
-import { fontSize } from '../../theme/typography';
-import { TOTAL_REGISTRATION_STEPS } from '../../constants';
+} from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
+import { useTheme } from "../../contexts/ThemeContext";
+import { borderRadius, spacing } from "../../theme/spacing";
+import { fontSize } from "../../theme/typography";
+import { TOTAL_REGISTRATION_STEPS } from "../../constants";
 
 interface ProgressIndicatorProps {
   currentStep: number;
@@ -31,12 +31,12 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
 
   const stepLabels = [
-    t('registration.steps.1', 'Personal'),
-    t('registration.steps.2', 'Address'),
-    t('registration.steps.3', 'Job'),
-    t('registration.steps.4', 'Education'),
-    t('registration.steps.5', 'Experience'),
-    t('registration.steps.7', 'Review'),
+    t("registration.steps.1", "Personal"),
+    t("registration.steps.2", "Address"),
+    t("registration.steps.3", "Job"),
+    t("registration.steps.4", "Education"),
+    t("registration.steps.5", "Experience"),
+    t("registration.steps.7", "Review"),
   ];
 
   return (
@@ -44,7 +44,9 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
       {/* Step bar */}
       <View style={styles.barContainer}>
         {/* Background track */}
-        <View style={[styles.track, { backgroundColor: theme.colors.border }]} />
+        <View
+          style={[styles.track, { backgroundColor: theme.colors.border }]}
+        />
         {/* Progress fill */}
         <Animated.View
           style={[
@@ -71,10 +73,9 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
                       isDone || isActive
                         ? theme.colors.primary
                         : theme.colors.border,
-                    borderColor:
-                      isActive
-                        ? theme.colors.primary
-                        : 'transparent',
+                    borderColor: isActive
+                      ? theme.colors.primary
+                      : "transparent",
                     width: isActive ? 28 : 22,
                     height: isActive ? 28 : 22,
                     borderRadius: isActive ? 14 : 11,
@@ -87,7 +88,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
                   <Text
                     style={[
                       styles.dotText,
-                      { color: isActive ? '#FFF' : theme.colors.textMuted },
+                      { color: isActive ? "#FFF" : theme.colors.textMuted },
                     ]}
                   >
                     {stepNum}
@@ -102,7 +103,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
       {/* Current step label */}
       <View style={styles.labelRow}>
         <Text style={[styles.stepLabel, { color: theme.colors.textSecondary }]}>
-          {t('registration.step', { current: currentStep, total: totalSteps })}
+          {t("registration.step", { current: currentStep, total: totalSteps })}
         </Text>
         <Text style={[styles.stepName, { color: theme.colors.primary }]}>
           {stepLabels[currentStep - 1]}
@@ -118,47 +119,47 @@ const styles = StyleSheet.create({
     marginBottom: spacing[5],
   },
   barContainer: {
-    position: 'relative',
+    position: "relative",
     height: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: spacing[2],
   },
   track: {
-    position: 'absolute',
+    position: "absolute",
     left: 11,
     right: 11,
     height: 3,
     borderRadius: borderRadius.full,
   },
   fill: {
-    position: 'absolute',
+    position: "absolute",
     left: 11,
     height: 3,
     borderRadius: borderRadius.full,
   },
   dotsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
   },
   dot: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 2,
   },
   dotText: {
     fontSize: fontSize.xs,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   labelRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   stepLabel: { fontSize: fontSize.xs },
-  stepName: { fontSize: fontSize.sm, fontWeight: '600' },
+  stepName: { fontSize: fontSize.sm, fontWeight: "600" },
 });
 
 export default ProgressIndicator;
