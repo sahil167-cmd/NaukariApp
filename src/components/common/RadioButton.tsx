@@ -2,11 +2,11 @@
  * WorkerConnect — Radio Button Component
  */
 
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
-import { useTheme } from '../../contexts/ThemeContext';
-import { spacing } from '../../theme/spacing';
-import { textStyles } from '../../theme/typography';
+import React from "react";
+import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
+import { useTheme } from "../../contexts/ThemeContext";
+import { spacing } from "../../theme/spacing";
+import { textStyles } from "../../theme/typography";
 
 interface RadioButtonProps {
   label: string;
@@ -41,10 +41,7 @@ const RadioButton: React.FC<RadioButtonProps> = ({
       >
         {selected && (
           <View
-            style={[
-              styles.innerCircle,
-              { backgroundColor: colors.primary },
-            ]}
+            style={[styles.innerCircle, { backgroundColor: colors.primary }]}
           />
         )}
       </View>
@@ -63,8 +60,8 @@ const RadioButton: React.FC<RadioButtonProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: spacing[2],
   },
   circle: {
@@ -72,8 +69,8 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: spacing[3],
   },
   innerCircle: {
