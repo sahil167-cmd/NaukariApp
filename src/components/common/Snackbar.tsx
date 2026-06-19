@@ -3,21 +3,21 @@
  * Bottom toast notification with success/error/info variants.
  */
 
-import React, { useEffect } from 'react';
-import { Text, StyleSheet, Pressable } from 'react-native';
+import React, { useEffect } from "react";
+import { Text, StyleSheet, Pressable } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   withTiming,
   runOnJS,
-} from 'react-native-reanimated';
-import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '../../contexts/ThemeContext';
-import { borderRadius, shadows, spacing } from '../../theme/spacing';
-import { fontSize } from '../../theme/typography';
+} from "react-native-reanimated";
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../../contexts/ThemeContext";
+import { borderRadius, shadows, spacing } from "../../theme/spacing";
+import { fontSize } from "../../theme/typography";
 
-type SnackbarType = 'success' | 'error' | 'info' | 'warning';
+type SnackbarType = "success" | "error" | "info" | "warning";
 
 interface SnackbarProps {
   visible: boolean;
@@ -30,16 +30,16 @@ interface SnackbarProps {
 }
 
 const ICON_MAP: Record<SnackbarType, string> = {
-  success: 'checkmark-circle',
-  error: 'alert-circle',
-  info: 'information-circle',
-  warning: 'warning',
+  success: "checkmark-circle",
+  error: "alert-circle",
+  info: "information-circle",
+  warning: "warning",
 };
 
 const Snackbar: React.FC<SnackbarProps> = ({
   visible,
   message,
-  type = 'info',
+  type = "info",
   duration = 3000,
   onDismiss,
   actionLabel,
@@ -86,8 +86,15 @@ const Snackbar: React.FC<SnackbarProps> = ({
         shadows.lg,
       ]}
     >
-      <Ionicons name={ICON_MAP[type] as any} size={20} color="#FFF" style={styles.icon} />
-      <Text style={styles.message} numberOfLines={2}>{message}</Text>
+      <Ionicons
+        name={ICON_MAP[type] as any}
+        size={20}
+        color="#FFF"
+        style={styles.icon}
+      />
+      <Text style={styles.message} numberOfLines={2}>
+        {message}
+      </Text>
       {actionLabel && onAction && (
         <Pressable onPress={onAction} style={styles.action}>
           <Text style={styles.actionText}>{actionLabel}</Text>
@@ -99,29 +106,29 @@ const Snackbar: React.FC<SnackbarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 80,
     left: spacing[4],
     right: spacing[4],
     borderRadius: borderRadius.lg,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: spacing[4],
     zIndex: 9999,
   },
   icon: { marginRight: spacing[2] },
   message: {
     flex: 1,
-    color: '#FFF',
+    color: "#FFF",
     fontSize: fontSize.sm,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   action: { marginLeft: spacing[3] },
   actionText: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: fontSize.sm,
-    fontWeight: '700',
-    textDecorationLine: 'underline',
+    fontWeight: "700",
+    textDecorationLine: "underline",
   },
 });
 
