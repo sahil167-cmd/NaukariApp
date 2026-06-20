@@ -2,31 +2,33 @@
  * WorkerConnect — Loader, ErrorScreen, EmptyScreen Components
  */
 
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
   ActivityIndicator,
   StyleSheet,
   TouchableOpacity,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '../../contexts/ThemeContext';
-import { spacing } from '../../theme/spacing';
-import { fontSize } from '../../theme/typography';
-import PrimaryButton from './PrimaryButton';
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../../contexts/ThemeContext";
+import { spacing } from "../../theme/spacing";
+import { fontSize } from "../../theme/typography";
+import PrimaryButton from "./PrimaryButton";
 
 // ── Loader ────────────────────────────────────────────────────────────────────
 
 interface LoaderProps {
   message?: string;
-  size?: 'small' | 'large';
+  size?: "small" | "large";
 }
 
-export const Loader: React.FC<LoaderProps> = ({ message, size = 'large' }) => {
+export const Loader: React.FC<LoaderProps> = ({ message, size = "large" }) => {
   const { theme } = useTheme();
   return (
-    <View style={[styles.centered, { backgroundColor: theme.colors.background }]}>
+    <View
+      style={[styles.centered, { backgroundColor: theme.colors.background }]}
+    >
       <ActivityIndicator size={size} color={theme.colors.primary} />
       {message && (
         <Text style={[styles.message, { color: theme.colors.textSecondary }]}>
@@ -46,16 +48,29 @@ interface ErrorScreenProps {
 }
 
 export const ErrorScreen: React.FC<ErrorScreenProps> = ({
-  title = 'Something went wrong',
-  message = 'An unexpected error occurred. Please try again.',
+  title = "Something went wrong",
+  message = "An unexpected error occurred. Please try again.",
   onRetry,
 }) => {
   const { theme } = useTheme();
   return (
-    <View style={[styles.centered, { backgroundColor: theme.colors.background, padding: spacing[6] }]}>
-      <Ionicons name="alert-circle-outline" size={64} color={theme.colors.error} />
-      <Text style={[styles.title, { color: theme.colors.textPrimary }]}>{title}</Text>
-      <Text style={[styles.message, { color: theme.colors.textSecondary }]}>{message}</Text>
+    <View
+      style={[
+        styles.centered,
+        { backgroundColor: theme.colors.background, padding: spacing[6] },
+      ]}
+    >
+      <Ionicons
+        name="alert-circle-outline"
+        size={64}
+        color={theme.colors.error}
+      />
+      <Text style={[styles.title, { color: theme.colors.textPrimary }]}>
+        {title}
+      </Text>
+      <Text style={[styles.message, { color: theme.colors.textSecondary }]}>
+        {message}
+      </Text>
       {onRetry && (
         <PrimaryButton
           title="Try Again"
@@ -77,17 +92,30 @@ interface EmptyScreenProps {
 }
 
 export const EmptyScreen: React.FC<EmptyScreenProps> = ({
-  title = 'Nothing here yet',
-  message = 'There is nothing to show right now.',
-  iconName = 'folder-open-outline',
+  title = "Nothing here yet",
+  message = "There is nothing to show right now.",
+  iconName = "folder-open-outline",
   action,
 }) => {
   const { theme } = useTheme();
   return (
-    <View style={[styles.centered, { backgroundColor: theme.colors.background, padding: spacing[6] }]}>
-      <Ionicons name={iconName as any} size={64} color={theme.colors.textMuted} />
-      <Text style={[styles.title, { color: theme.colors.textPrimary }]}>{title}</Text>
-      <Text style={[styles.message, { color: theme.colors.textSecondary }]}>{message}</Text>
+    <View
+      style={[
+        styles.centered,
+        { backgroundColor: theme.colors.background, padding: spacing[6] },
+      ]}
+    >
+      <Ionicons
+        name={iconName as any}
+        size={64}
+        color={theme.colors.textMuted}
+      />
+      <Text style={[styles.title, { color: theme.colors.textPrimary }]}>
+        {title}
+      </Text>
+      <Text style={[styles.message, { color: theme.colors.textSecondary }]}>
+        {message}
+      </Text>
       {action && (
         <PrimaryButton
           title={action.label}
@@ -108,7 +136,12 @@ interface OfflineScreenProps {
 export const OfflineScreen: React.FC<OfflineScreenProps> = ({ onRetry }) => {
   const { theme } = useTheme();
   return (
-    <View style={[styles.centered, { backgroundColor: theme.colors.background, padding: spacing[6] }]}>
+    <View
+      style={[
+        styles.centered,
+        { backgroundColor: theme.colors.background, padding: spacing[6] },
+      ]}
+    >
       <Ionicons name="wifi-outline" size={64} color={theme.colors.textMuted} />
       <Text style={[styles.title, { color: theme.colors.textPrimary }]}>
         No Internet Connection
@@ -130,19 +163,19 @@ export const OfflineScreen: React.FC<OfflineScreenProps> = ({ onRetry }) => {
 const styles = StyleSheet.create({
   centered: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontSize: fontSize.lg,
-    fontWeight: '700',
+    fontWeight: "700",
     marginTop: spacing[4],
-    textAlign: 'center',
+    textAlign: "center",
   },
   message: {
     fontSize: fontSize.base,
     marginTop: spacing[2],
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: fontSize.base * 1.5,
   },
 });
