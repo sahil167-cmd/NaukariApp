@@ -3,15 +3,15 @@
  * Routes between auth flow and main app based on authentication state.
  */
 
-import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useAuthStore } from '../store/authStore';
-import SplashScreen from '../screens/SplashScreen';
-import AuthNavigator from './AuthNavigator';
-import MainNavigator from './MainNavigator';
-import RegistrationNavigator from './RegistrationNavigator';
+import React, { useState, useEffect } from "react";
+import { View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useAuthStore } from "../store/authStore";
+import SplashScreen from "../screens/SplashScreen";
+import AuthNavigator from "./AuthNavigator";
+import MainNavigator from "./MainNavigator";
+import RegistrationNavigator from "./RegistrationNavigator";
 
 const Stack = createNativeStackNavigator();
 
