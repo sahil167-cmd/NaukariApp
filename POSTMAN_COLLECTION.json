@@ -1,0 +1,359 @@
+{
+  "info": {
+    "_postman_id": "0d25fa0a-b6ea-4ea2-9db8-028f89e248b1",
+    "name": "Naukari Bazaar API",
+    "description": "Postman Collection for testing the Naukari Bazaar Express API endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Request OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"8976478247\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/auth/request-otp",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "request-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify OTP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = JSON.parse(responseBody);",
+                  "if (jsonData.success && jsonData.data && jsonData.data.token) {",
+                  "    pm.environment.set(\"JWT_TOKEN\", jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"8976478247\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/auth/verify-otp",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Registration",
+      "item": [
+        {
+          "name": "Submit Registration Wizard",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"personal\": {\n    \"firstName\": \"Raju\",\n    \"lastName\": \"Sharma\",\n    \"gender\": \"Male\",\n    \"dob\": \"12-05-1996\"\n  },\n  \"address\": {\n    \"state\": \"Maharashtra\",\n    \"city\": \"Mumbai\",\n    \"district\": \"Mumbai Suburbs\",\n    \"pincode\": \"400069\"\n  },\n  \"jobPreferences\": {\n    \"categories\": [\"Construction\", \"Logistics & Delivery\"],\n    \"salaryRange\": \"₹15,000 - ₹20,000\",\n    \"shiftPreference\": \"Day Shift\",\n    \"immediatelyAvailable\": true\n  },\n  \"education\": {\n    \"level\": \"10th Pass\",\n    \"schoolName\": \"Sharda Mandir High School\",\n    \"passingYear\": 2012\n  },\n  \"experience\": {\n    \"hasExperience\": true,\n    \"years\": 3,\n    \"previousJobTitle\": \"Mason Assistant\",\n    \"previousCompany\": \"L&T Construction\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/register",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "register"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/profile",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile Draft",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"personal\": {\n    \"firstName\": \"Raju\",\n    \"lastName\": \"Sharma\",\n    \"gender\": \"Male\",\n    \"dob\": \"12-05-1996\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/profile",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard Details",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/dashboard",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "dashboard"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Jobs",
+      "item": [
+        {
+          "name": "Get Jobs",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/jobs",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "jobs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Apply for Job",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/jobs/:id/apply",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "jobs",
+                ":id",
+                "apply"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "JOB_ID_HERE"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analytics Logs",
+      "item": [
+        {
+          "name": "Log Support Click Redirection",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"actionType\": \"CALL\",\n  \"device\": \"Android\",\n  \"platform\": \"android\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/contact-logs",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contact-logs"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://127.0.0.1:5000/api/v1",
+      "type": "string"
+    }
+  ]
+}
