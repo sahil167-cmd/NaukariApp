@@ -12,7 +12,22 @@ import { lightColors, darkColors } from './colors';
 import { fontSize, fontWeight, fontFamily, lineHeight, letterSpacing, textStyles } from './typography';
 import { spacing, borderRadius, shadows, layout } from './spacing';
 
-export const lightTheme = {
+export interface AppTheme {
+  readonly colors: typeof lightColors;
+  readonly fontSize: typeof fontSize;
+  readonly fontWeight: typeof fontWeight;
+  readonly fontFamily: typeof fontFamily;
+  readonly lineHeight: typeof lineHeight;
+  readonly letterSpacing: typeof letterSpacing;
+  readonly textStyles: typeof textStyles;
+  readonly spacing: typeof spacing;
+  readonly borderRadius: typeof borderRadius;
+  readonly shadows: typeof shadows;
+  readonly layout: typeof layout;
+  readonly isDark: boolean;
+}
+
+export const lightTheme: AppTheme = {
   colors: lightColors,
   fontSize,
   fontWeight,
@@ -25,9 +40,9 @@ export const lightTheme = {
   shadows,
   layout,
   isDark: false,
-} as const;
+};
 
-export const darkTheme = {
+export const darkTheme: AppTheme = {
   colors: darkColors,
   fontSize,
   fontWeight,
@@ -40,6 +55,4 @@ export const darkTheme = {
   shadows,
   layout,
   isDark: true,
-} as const;
-
-export type AppTheme = typeof lightTheme;
+};

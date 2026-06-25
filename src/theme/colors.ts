@@ -58,7 +58,52 @@ export const palette = {
   dark400: '#4D4D4D',
 } as const;
 
-export const lightColors = {
+export interface ColorTokens {
+  readonly background: string;
+  readonly surface: string;
+  readonly surfaceVariant: string;
+  readonly border: string;
+  readonly divider: string;
+  readonly primary: string;
+  readonly primaryLight: string;
+  readonly primaryDark: string;
+  readonly textPrimary: string;
+  readonly textSecondary: string;
+  readonly textMuted: string;
+  readonly textInverse: string;
+  readonly textPlaceholder: string;
+  readonly buttonPrimary: string;
+  readonly buttonPrimaryText: string;
+  readonly buttonSecondary: string;
+  readonly buttonSecondaryText: string;
+  readonly buttonOutlineText: string;
+  readonly buttonOutlineBorder: string;
+  readonly inputBackground: string;
+  readonly inputBorder: string;
+  readonly inputBorderFocused: string;
+  readonly inputText: string;
+  readonly inputPlaceholder: string;
+  readonly inputError: string;
+  readonly cardBackground: string;
+  readonly cardBorder: string;
+  readonly cardShadow: string;
+  readonly success: string;
+  readonly successBackground: string;
+  readonly error: string;
+  readonly errorBackground: string;
+  readonly warning: string;
+  readonly warningBackground: string;
+  readonly info: string;
+  readonly infoBackground: string;
+  readonly tabActive: string;
+  readonly tabInactive: string;
+  readonly tabBackground: string;
+  readonly overlay: string;
+  readonly shimmerBase: string;
+  readonly shimmerHighlight: string;
+}
+
+export const lightColors: ColorTokens = {
   // Layout
   background: palette.cream100,
   surface: palette.white,
@@ -118,9 +163,9 @@ export const lightColors = {
   overlay: 'rgba(0,0,0,0.5)',
   shimmerBase: palette.cream300,
   shimmerHighlight: palette.cream100,
-} as const;
+};
 
-export const darkColors: typeof lightColors = {
+export const darkColors: ColorTokens = {
   background: palette.dark900,
   surface: palette.dark800,
   surfaceVariant: palette.dark700,
@@ -171,6 +216,4 @@ export const darkColors: typeof lightColors = {
   overlay: 'rgba(0,0,0,0.7)',
   shimmerBase: palette.dark600,
   shimmerHighlight: palette.dark500,
-} as const;
-
-export type ColorTokens = typeof lightColors;
+};

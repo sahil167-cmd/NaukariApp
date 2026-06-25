@@ -2,7 +2,7 @@
  * WorkerConnect — App Constants
  */
 
-export const APP_NAME = 'RecruitIndia';
+export const APP_NAME = 'Naukari Bazaar';
 export const APP_TAGLINE = 'Connecting Workers with Opportunities';
 export const APP_VERSION = '1.0.0';
 
@@ -20,14 +20,16 @@ export const STORAGE_KEYS = {
 
 // API
 export const API_TIMEOUT = 30000;
-export const API_BASE_URL = 'https://api.recruitindia.in/v1';
+// API_BASE_URL is inlined from .env by Babel at build time.
+// Fallback: use LAN IP so physical devices/emulators can reach the backend.
+export const API_BASE_URL = process.env.API_BASE_URL || 'http://192.168.0.105:5000/api/v1';
 
 // OTP
 export const OTP_LENGTH = 6;
 export const OTP_RESEND_SECONDS = 60;
 
 // Registration
-export const TOTAL_REGISTRATION_STEPS = 7;
+export const TOTAL_REGISTRATION_STEPS = 6;
 
 // Supported Languages
 export const SUPPORTED_LANGUAGES = [
