@@ -7,41 +7,33 @@ import { View, Text, StyleSheet, Image, StatusBar } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
-  withSequence,
   withTiming,
 } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
-import { LinearGradient } from 'expo-linear-gradient';
-import { palette } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { textStyles } from '../theme/typography';
 
 const SplashScreen: React.FC = () => {
   const { t } = useTranslation();
-  const scale = useSharedValue(0);
   const opacity = useSharedValue(0);
+  const progress = useSharedValue(0);
 
   useEffect(() => {
-    scale.value = withSequence(
-      withSpring(1.2, { damping: 10 }),
-      withSpring(1, { damping: 15 })
-    );
-    opacity.value = withTiming(1, { duration: 600 });
+    opacity.value = withTiming(1, { duration: 800 });
+    progress.value = withTiming(100, { duration: 3200 });
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
     opacity: opacity.value,
+  }));
+
+  const progressStyle = useAnimatedStyle(() => ({
+    width: `${progress.value}%`,
   }));
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={palette.cream100} />
-      <LinearGradient
-        colors={[palette.cream50, palette.cream100, palette.cream200]}
-        style={StyleSheet.absoluteFillObject}
-      />
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       
       <Animated.View style={[styles.content, animatedStyle]}>
         <View style={styles.iconContainer}>
@@ -57,7 +49,7 @@ const SplashScreen: React.FC = () => {
         
         <View style={styles.footer}>
           <View style={styles.progressBar}>
-            <View style={styles.progressIndicator} />
+            <Animated.View style={[styles.progressIndicator, progressStyle]} />
           </View>
           <Text style={styles.loadingText}>{t('splash.finding', 'FINDING THE BEST ROLES')}</Text>
         </View>
@@ -69,7 +61,7 @@ const SplashScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: palette.cream100,
+    backgroundColor: '#FFFFFF',
   },
   content: {
     flex: 1,
@@ -84,23 +76,23 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 30,
-    backgroundColor: palette.orange500,
+    backgroundColor: '#FFFFFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.1,
     shadowRadius: 16,
   },
   title: {
     ...textStyles.h1,
     fontSize: 32,
     fontWeight: '700',
-    color: palette.orange600,
+    color: '#1A1A1A',
     marginBottom: spacing[2],
     textAlign: 'center',
   },
   tagline: {
     ...textStyles.body1,
-    color: palette.gray600,
+    color: '#6B6B6B',
     textAlign: 'center',
     marginBottom: spacing[12],
   },
@@ -113,19 +105,18 @@ const styles = StyleSheet.create({
   progressBar: {
     width: 160,
     height: 4,
-    backgroundColor: palette.cream300,
+    backgroundColor: '#F5EDE4',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: spacing[3],
   },
   progressIndicator: {
-    width: '70%',
     height: '100%',
-    backgroundColor: palette.orange500,
+    backgroundColor: '#E8621A',
   },
   loadingText: {
     ...textStyles.caption,
-    color: palette.gray500,
+    color: '#8E8E8E',
     letterSpacing: 1,
     fontWeight: '600',
   },

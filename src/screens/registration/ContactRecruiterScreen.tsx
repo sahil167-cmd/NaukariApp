@@ -8,15 +8,14 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   Dimensions,
   BackHandler,
   Linking,
   Modal,
   Pressable,
-  ActivityIndicator,
-} from 'react-native';
+  ActivityIndicator} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -141,7 +140,7 @@ const ContactRecruiterScreen: React.FC = () => {
     // Log whatsapp event to database
     await contactService.logContact('WHATSAPP');
 
-    // Build WhatsApp Message dynamically
+    // Build user details for the message
     const name = profile?.personal
       ? `${profile.personal.firstName} ${profile.personal.lastName}`
       : user?.name || '';
@@ -149,15 +148,13 @@ const ContactRecruiterScreen: React.FC = () => {
     const jobCategories = profile?.jobPreferences?.categories?.join(', ') || '';
     const city = profile?.address?.city || '';
 
-    const textMessage = `Hello,
-I have successfully registered in the Naukari Bazaar application.
-
-My Name: ${name}
-Mobile Number: ${phone}
-Preferred Job Category: ${jobCategories}
-City: ${city}
-
-Please guide me further regarding available jobs.`;
+    // Use language-aware WhatsApp message template (auto-translates to user's selected language)
+    const textMessage = t('contactRecruiter.whatsappMessage', {
+      name: name || 'User',
+      phone: phone,
+      categories: jobCategories,
+      city: city,
+    });
 
     const whatsappUrl = `https://wa.me/${SUPPORT_WHATSAPP}?text=${encodeURIComponent(textMessage)}`;
 
@@ -168,7 +165,7 @@ Please guide me further regarding available jobs.`;
         // Show bottom sheet after WhatsApp is opened
         setTimeout(() => setBottomSheetVisible(true), 1000);
       } else {
-        // WhatsApp protocol might fail on simulator or web, try to open in browser link
+        // Fallback: open in browser
         const fallbackUrl = `https://wa.me/${SUPPORT_WHATSAPP}?text=${encodeURIComponent(textMessage)}`;
         await Linking.openURL(fallbackUrl);
         setTimeout(() => setBottomSheetVisible(true), 1000);

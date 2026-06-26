@@ -1,142 +1,100 @@
 /**
- * WorkerConnect — Splash Screen
- * Matches Stitch design: briefcase icon, title, tagline, animated loader bar.
+ * Naukri Bazaar — Splash Screen
+ * Pixel-perfect recreation of the app splash screen.
+ * White background, red squircle logo, app name + Hindi tagline.
  */
 
 import React, { useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Dimensions,
-} from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
   withDelay,
-  withSequence,
   withSpring,
   runOnJS,
 } from 'react-native-reanimated';
-import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
-import { useTheme } from '../../contexts/ThemeContext';
-import { spacing, borderRadius } from '../../theme/spacing';
-import { fontSize } from '../../theme/typography';
-import { APP_NAME } from '../../constants';
 
 const { width } = Dimensions.get('window');
+
+const LOGO_SIZE = Math.round(width * 0.38);
+const LOGO_RADIUS = Math.round(LOGO_SIZE * 0.28);
 
 interface SplashScreenProps {
   onFinish: () => void;
 }
 
 const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
-  const { theme } = useTheme();
-
-  const iconScale = useSharedValue(0);
-  const iconOpacity = useSharedValue(0);
-  const titleOpacity = useSharedValue(0);
-  const titleY = useSharedValue(20);
-  const imageOpacity = useSharedValue(0);
-  const imageY = useSharedValue(30);
+  const logoScale = useSharedValue(0.6);
+  const logoOpacity = useSharedValue(0);
+  const textOpacity = useSharedValue(0);
+  const textY = useSharedValue(16);
   const barWidth = useSharedValue(0);
-  const loaderOpacity = useSharedValue(0);
+  const barOpacity = useSharedValue(0);
 
   useEffect(() => {
-    // Icon pop
-    iconScale.value = withDelay(100, withSpring(1, { damping: 12 }));
-    iconOpacity.value = withDelay(100, withTiming(1, { duration: 300 }));
+    // Logo pop in
+    logoOpacity.value = withDelay(150, withTiming(1, { duration: 350 }));
+    logoScale.value = withDelay(150, withSpring(1, { damping: 13, stiffness: 140 }));
 
-    // Title
-    titleOpacity.value = withDelay(300, withTiming(1, { duration: 400 }));
-    titleY.value = withDelay(300, withSpring(0, { damping: 15 }));
+    // Text fade up
+    textOpacity.value = withDelay(450, withTiming(1, { duration: 400 }));
+    textY.value = withDelay(450, withSpring(0, { damping: 16 }));
 
-    // Image
-    imageOpacity.value = withDelay(500, withTiming(1, { duration: 400 }));
-    imageY.value = withDelay(500, withSpring(0, { damping: 15 }));
-
-    // Progress bar
-    loaderOpacity.value = withDelay(700, withTiming(1, { duration: 200 }));
-    barWidth.value = withDelay(800, withTiming(100, { duration: 500 }));
+    // Loading bar
+    barOpacity.value = withDelay(700, withTiming(1, { duration: 200 }));
+    barWidth.value = withDelay(750, withTiming(100, { duration: 600 }));
 
     // Navigate away
     const timer = setTimeout(() => {
       runOnJS(onFinish)();
-    }, 1400);
+    }, 1600);
 
     return () => clearTimeout(timer);
   }, []);
 
-  const iconAnimStyle = useAnimatedStyle(() => ({
-    opacity: iconOpacity.value,
-    transform: [{ scale: iconScale.value }],
+  const logoStyle = useAnimatedStyle(() => ({
+    opacity: logoOpacity.value,
+    transform: [{ scale: logoScale.value }],
   }));
 
-  const titleAnimStyle = useAnimatedStyle(() => ({
-    opacity: titleOpacity.value,
-    transform: [{ translateY: titleY.value }],
+  const textStyle = useAnimatedStyle(() => ({
+    opacity: textOpacity.value,
+    transform: [{ translateY: textY.value }],
   }));
 
-  const imageAnimStyle = useAnimatedStyle(() => ({
-    opacity: imageOpacity.value,
-    transform: [{ translateY: imageY.value }],
+  const barContainerStyle = useAnimatedStyle(() => ({
+    opacity: barOpacity.value,
   }));
 
-  const barAnimStyle = useAnimatedStyle(() => ({
+  const barFillStyle = useAnimatedStyle(() => ({
     width: `${barWidth.value}%`,
   }));
 
-  const loaderAnimStyle = useAnimatedStyle(() => ({
-    opacity: loaderOpacity.value,
-  }));
-
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <StatusBar style={theme.isDark ? 'light' : 'dark'} />
+    <View style={styles.container}>
+      <StatusBar style="dark" />
 
-      {/* Briefcase Icon */}
-      <Animated.View style={[styles.iconWrapper, iconAnimStyle]}>
-        <View style={[styles.iconBg, { backgroundColor: theme.colors.primary }]}>
-          <Ionicons name="briefcase" size={36} color="#FFF" />
+      {/* Logo */}
+      <Animated.View style={[styles.logoWrapper, logoStyle]}>
+        <View style={[styles.squircle, { width: LOGO_SIZE, height: LOGO_SIZE, borderRadius: LOGO_RADIUS }]}>
+          <Text style={styles.logoTextTop}>NAUKRI</Text>
+          <Text style={styles.logoTextBottom}>BAZAR</Text>
         </View>
       </Animated.View>
 
-      {/* Title & Tagline */}
-      <Animated.View style={[styles.titleSection, titleAnimStyle]}>
-        <Text style={[styles.appName, { color: theme.colors.primary }]}>{APP_NAME}</Text>
-        <Text style={[styles.tagline, { color: theme.colors.textSecondary }]}>
-          Connecting Workers with Opportunities
-        </Text>
+      {/* App name + Tagline */}
+      <Animated.View style={[styles.textSection, textStyle]}>
+        <Text style={styles.appName}>Naukri Bazar</Text>
+        <Text style={styles.tagline}>नौकरी कोई भी कहीं भी</Text>
       </Animated.View>
 
-      {/* Hero Image */}
-      <Animated.View style={[styles.imageWrapper, imageAnimStyle]}>
-        <View style={[styles.imageCard, { backgroundColor: theme.colors.surface }]}>
-          <Image
-            source={require('../../../assets/workers_hero.png')}
-            style={styles.heroImage}
-            resizeMode="contain"
-          />
+      {/* Loading Bar at bottom */}
+      <Animated.View style={[styles.loaderSection, barContainerStyle]}>
+        <View style={styles.loaderTrack}>
+          <Animated.View style={[styles.loaderFill, barFillStyle]} />
         </View>
-      </Animated.View>
-
-      {/* Loader Bar */}
-      <Animated.View style={[styles.loaderSection, loaderAnimStyle]}>
-        <View style={[styles.loaderTrack, { backgroundColor: theme.colors.border }]}>
-          <Animated.View
-            style={[
-              styles.loaderFill,
-              { backgroundColor: theme.colors.primary },
-              barAnimStyle,
-            ]}
-          />
-        </View>
-        <Text style={[styles.loadingText, { color: theme.colors.textMuted }]}>
-          FINDING THE BEST ROLES
-        </Text>
       </Animated.View>
     </View>
   );
@@ -145,69 +103,73 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: spacing[6],
-  },
-  iconWrapper: {
-    marginBottom: spacing[4],
-  },
-  iconBg: {
-    width: 80,
-    height: 80,
-    borderRadius: borderRadius.xl,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  titleSection: {
-    alignItems: 'center',
-    marginBottom: spacing[8],
+  logoWrapper: {
+    marginBottom: 20,
+    shadowColor: '#C0392B',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.18,
+    shadowRadius: 16,
+    elevation: 8,
   },
-  appName: {
-    fontSize: fontSize['2xl'],
+  squircle: {
+    backgroundColor: '#D94F4F',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoTextTop: {
+    color: '#FFFFFF',
     fontWeight: '800',
-    marginBottom: spacing[1],
-  },
-  tagline: {
-    fontSize: fontSize.base,
+    fontSize: Math.round(width * 0.085),
+    letterSpacing: 1,
+    lineHeight: Math.round(width * 0.1),
     textAlign: 'center',
   },
-  imageWrapper: {
-    width: '100%',
-    marginBottom: spacing[12],
+  logoTextBottom: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+    fontSize: Math.round(width * 0.085),
+    letterSpacing: 1,
+    lineHeight: Math.round(width * 0.1),
+    textAlign: 'center',
   },
-  imageCard: {
-    borderRadius: borderRadius.xl,
-    overflow: 'hidden',
+  textSection: {
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing[4],
+    marginTop: 4,
   },
-  heroImage: {
-    width: width * 0.65,
-    height: width * 0.65,
+  appName: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: 4,
+    letterSpacing: 0.3,
+  },
+  tagline: {
+    fontSize: 15,
+    color: '#888888',
+    fontStyle: 'italic',
+    letterSpacing: 0.2,
   },
   loaderSection: {
-    width: '100%',
     position: 'absolute',
-    bottom: spacing[12],
+    bottom: 60,
     alignItems: 'center',
-    gap: spacing[3],
+    width: '100%',
   },
   loaderTrack: {
-    width: '50%',
+    width: '45%',
     height: 3,
-    borderRadius: borderRadius.full,
+    backgroundColor: '#E8E8E8',
+    borderRadius: 99,
     overflow: 'hidden',
   },
   loaderFill: {
     height: '100%',
-    borderRadius: borderRadius.full,
-  },
-  loadingText: {
-    fontSize: fontSize.xs,
-    letterSpacing: 1.5,
-    fontWeight: '600',
+    backgroundColor: '#D94F4F',
+    borderRadius: 99,
   },
 });
 

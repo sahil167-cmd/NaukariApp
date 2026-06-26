@@ -1,6 +1,7 @@
 /**
- * WorkerConnect — Phone Input Component
- * Indian phone number input with +91 country code prefix.
+ * Naukri Bazaar — Phone Input Component
+ * Indian phone number input with +91 prefix.
+ * Enforces exactly 10 digits with a live counter.
  */
 
 import React, { forwardRef } from 'react';
@@ -10,6 +11,7 @@ import {
   Text,
   StyleSheet,
   ViewStyle,
+  KeyboardTypeOptions,
 } from 'react-native';
 import { useTheme } from '../../contexts/ThemeContext';
 import { borderRadius, layout, spacing } from '../../theme/spacing';
@@ -22,10 +24,15 @@ interface PhoneInputProps {
   label?: string;
   containerStyle?: ViewStyle;
   testID?: string;
+  maxLength?: number;
+  keyboardType?: KeyboardTypeOptions;
+  placeholder?: string;
 }
 
+const PHONE_MAX = 10;
+
 const PhoneInput = forwardRef<TextInput, PhoneInputProps>(
-  ({ value, onChangeText, error, label, containerStyle, testID }, ref) => {
+  ({ value, onChangeText, error, label, containerStyle, testID, maxLength = PHONE_MAX }, ref) => {
     const { theme } = useTheme();
     const [isFocused, setIsFocused] = React.useState(false);
 
@@ -34,6 +41,15 @@ const PhoneInput = forwardRef<TextInput, PhoneInputProps>(
       : isFocused
       ? theme.colors.inputBorderFocused
       : theme.colors.inputBorder;
+
+    const digitCount = (value || '').length;
+    const isComplete = digitCount === PHONE_MAX;
+
+    const handleChange = (text: string) => {
+      // Strip any non-digit characters and cap at 10 digits
+      const digits = text.replace(/\D/g, '').slice(0, PHONE_MAX);
+      onChangeText(digits);
+    };
 
     return (
       <View style={[styles.container, containerStyle]}>
@@ -45,7 +61,11 @@ const PhoneInput = forwardRef<TextInput, PhoneInputProps>(
         <View
           style={[
             styles.wrapper,
-            { backgroundColor: theme.colors.inputBackground, borderColor },
+            {
+              backgroundColor: theme.colors.inputBackground,
+              borderColor,
+              borderWidth: isFocused ? 2 : 1.5,
+            },
           ]}
         >
           <View style={[styles.prefix, { borderRightColor: theme.colors.inputBorder }]}>
@@ -57,17 +77,32 @@ const PhoneInput = forwardRef<TextInput, PhoneInputProps>(
             ref={ref}
             style={[styles.input, { color: theme.colors.inputText }]}
             value={value}
-            onChangeText={(t) => onChangeText(t.replace(/\D/g, '').slice(0, 10))}
+            onChangeText={handleChange}
             keyboardType="number-pad"
-            placeholder="Enter mobile number"
+            placeholder="Enter 10-digit number"
             placeholderTextColor={theme.colors.inputPlaceholder}
-            maxLength={10}
+            maxLength={PHONE_MAX}
             returnKeyType="done"
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             testID={testID ?? 'phone-input'}
-            accessibilityLabel={label ?? 'Mobile number'}
+            accessibilityLabel={label ?? 'Mobile number input'}
           />
+          {/* Live digit counter */}
+          <Text
+            style={[
+              styles.counter,
+              {
+                color: isComplete
+                  ? theme.colors.success ?? '#27AE60'
+                  : isFocused
+                  ? theme.colors.primary
+                  : theme.colors.textMuted,
+              },
+            ]}
+          >
+            {digitCount}/{PHONE_MAX}
+          </Text>
         </View>
         {error && (
           <Text style={[styles.error, { color: theme.colors.error }]}>{error}</Text>
@@ -89,7 +124,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: layout.inputHeight,
     borderRadius: borderRadius.md,
-    borderWidth: 1.5,
     overflow: 'hidden',
   },
   prefix: {
@@ -108,6 +142,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[3],
     fontSize: fontSize.base,
     height: '100%',
+  },
+  counter: {
+    fontSize: fontSize.xs,
+    fontWeight: '600',
+    paddingRight: spacing[3],
+    minWidth: 36,
+    textAlign: 'right',
   },
   error: {
     fontSize: fontSize.xs,

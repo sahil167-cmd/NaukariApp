@@ -1,6 +1,7 @@
 /**
- * WorkerConnect — Login Screen
- * Phone + OTP-based login flow.
+ * Naukri Bazaar — Login Screen
+ * Direct phone-number login — no OTP step.
+ * Validates exactly 10 digits (Indian mobile: starts with 6-9).
  */
 
 import React, { useState } from 'react';
@@ -17,17 +18,16 @@ import {
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FadeInDown } from 'react-native-reanimated';
-import Animated from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
 import PhoneInput from '../../components/common/PhoneInput';
 import PrimaryButton from '../../components/common/PrimaryButton';
 import { loginSchema } from '../../validators';
 import { authService } from '../../services/api/authService';
+import { useAuthStore } from '../../store/authStore';
 import { spacing, layout, borderRadius } from '../../theme/spacing';
 import { fontSize } from '../../theme/typography';
-
 import { useTranslation } from 'react-i18next';
 
 interface LoginFormData {
@@ -35,14 +35,15 @@ interface LoginFormData {
 }
 
 interface LoginScreenProps {
-  onOTPSent: (phone: string) => void;
+  onSuccess: (isNew: boolean) => void;
   onBack: () => void;
   onRegister: () => void;
 }
 
-const LoginScreen: React.FC<LoginScreenProps> = ({ onOTPSent, onBack, onRegister }) => {
+const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess, onBack, onRegister }) => {
   const { theme } = useTheme();
   const { t } = useTranslation();
+  const { login } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,10 +60,20 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onOTPSent, onBack, onRegister
     try {
       setIsLoading(true);
       setError(null);
-      await authService.requestOTP({ phone: data.phone });
-      onOTPSent(data.phone);
+      const response = await authService.loginWithPhone({ phone: data.phone });
+      if (response.success) {
+        login(response.data.user, response.data.tokens);
+        onSuccess(response.data.isNew);
+      } else {
+        setError(response.message || t('errors.serverError'));
+      }
     } catch (err: any) {
-      setError(err.message ?? 'Failed to send OTP. Please try again.');
+      const msg = err?.message;
+      if (msg && msg.length < 120 && !msg.includes('Path `')) {
+        setError(msg);
+      } else {
+        setError(t('errors.serverError'));
+      }
     } finally {
       setIsLoading(false);
     }
@@ -85,7 +96,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onOTPSent, onBack, onRegister
           </TouchableOpacity>
 
           <Animated.View entering={FadeInDown.delay(100).springify()}>
-            {/* Header */}
+            {/* Logo-style header */}
             <View style={[styles.iconWrapper, { backgroundColor: theme.colors.primaryLight }]}>
               <Ionicons name="phone-portrait" size={28} color={theme.colors.primary} />
             </View>
@@ -93,7 +104,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onOTPSent, onBack, onRegister
               {t('auth.login')}
             </Text>
             <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-              {t('auth.loginSubtitle')}
+              {t('auth.loginSubtitleDirect', 'Enter your mobile number to login or register')}
             </Text>
           </Animated.View>
 
@@ -106,12 +117,26 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onOTPSent, onBack, onRegister
                 <PhoneInput
                   label={t('auth.phone')}
                   value={value}
-                  onChangeText={onChange}
+                  onChangeText={(text) => {
+                    // Strip non-digits and enforce max 10 digits
+                    const digits = text.replace(/\D/g, '').slice(0, 10);
+                    onChange(digits);
+                  }}
                   error={errors.phone?.message}
                   testID="login-phone-input"
+                  maxLength={10}
+                  keyboardType="number-pad"
                 />
               )}
             />
+
+            {/* Inline digit counter hint */}
+            <Animated.View entering={FadeInDown.delay(200)} style={styles.hintRow}>
+              <Ionicons name="information-circle-outline" size={14} color={theme.colors.textMuted} />
+              <Text style={[styles.hintText, { color: theme.colors.textMuted }]}>
+                {t('auth.phoneHint', '10-digit Indian mobile number (e.g. 98XXXXXXXX)')}
+              </Text>
+            </Animated.View>
 
             {error && (
               <View style={[styles.errorBox, { backgroundColor: theme.colors.errorBackground }]}>
@@ -121,32 +146,19 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onOTPSent, onBack, onRegister
             )}
 
             <PrimaryButton
-              title={t('auth.sendOtp')}
+              title={t('auth.loginDirect', 'LOGIN / REGISTER')}
               onPress={handleSubmit(onSubmit)}
               loading={isLoading}
-              testID="send-otp-button"
+              testID="login-button"
             />
           </Animated.View>
 
-          {/* Divider */}
-          <Animated.View entering={FadeInDown.delay(500).springify()} style={styles.dividerRow}>
-            <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
-            <Text style={[styles.orText, { color: theme.colors.textMuted }]}>
-              {t('auth.orLogin')}
+          {/* Privacy note */}
+          <Animated.View entering={FadeInDown.delay(500).springify()} style={styles.privacyRow}>
+            <Ionicons name="lock-closed-outline" size={14} color={theme.colors.textMuted} />
+            <Text style={[styles.privacyText, { color: theme.colors.textMuted }]}>
+              {t('auth.privacy', 'Your data is secure and only accessible by you')}
             </Text>
-            <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
-          </Animated.View>
-
-          {/* Register Link */}
-          <Animated.View entering={FadeInDown.delay(700).springify()} style={styles.registerRow}>
-            <Text style={[styles.registerText, { color: theme.colors.textSecondary }]}>
-              {t('auth.noAccount')}{' '}
-            </Text>
-            <TouchableOpacity onPress={onRegister}>
-              <Text style={[styles.registerLink, { color: theme.colors.primary }]}>
-                {t('auth.signUp')}
-              </Text>
-            </TouchableOpacity>
           </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -188,6 +200,17 @@ const styles = StyleSheet.create({
     marginBottom: spacing[6],
   },
   form: { gap: spacing[2] },
+  hintRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing[1],
+    marginTop: -spacing[1],
+    marginBottom: spacing[1],
+  },
+  hintText: {
+    fontSize: fontSize.xs,
+    flex: 1,
+  },
   errorBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -197,21 +220,18 @@ const styles = StyleSheet.create({
     marginBottom: spacing[2],
   },
   errorText: { fontSize: fontSize.sm, flex: 1 },
-  dividerRow: {
+  privacyRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing[3],
-    marginVertical: spacing[6],
-  },
-  divider: { flex: 1, height: 1 },
-  orText: { fontSize: fontSize.sm },
-  registerRow: {
-    flexDirection: 'row',
+    gap: spacing[2],
     justifyContent: 'center',
-    alignItems: 'center',
+    marginTop: spacing[8],
   },
-  registerText: { fontSize: fontSize.base },
-  registerLink: { fontSize: fontSize.base, fontWeight: '700' },
+  privacyText: {
+    fontSize: fontSize.xs,
+    textAlign: 'center',
+    flex: 1,
+  },
 });
 
 export default LoginScreen;

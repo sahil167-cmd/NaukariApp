@@ -1,8 +1,7 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView,
-  StatusBar, Switch,
-} from 'react-native';
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, StatusBar, Switch} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -80,12 +79,34 @@ export const PrivacyPolicyScreen: React.FC<{ onBack?: () => void }> = ({ onBack 
   const { theme } = useTheme();
   const { t } = useTranslation();
   const sections = [
-    { title: t('privacy.infoCollect', 'Information We Collect'), body: t('privacy.infoCollectBody', 'We collect information you provide directly to us when you create an account, complete your profile, or contact us for support. This includes your name, phone number, email, address, Aadhaar and PAN numbers, and employment details.') },
-    { title: t('privacy.howUse', 'How We Use Your Information'), body: t('privacy.howUseBody', 'We use the information we collect to match you with suitable job opportunities, improve our services, send you notifications and job alerts, and comply with legal obligations.') },
-    { title: t('privacy.dataSecurity', 'Data Security'), body: t('privacy.dataSecurityBody', 'We use industry-standard encryption and security practices to protect your personal information. Your Aadhaar and PAN data are encrypted and stored securely.') },
-    { title: t('privacy.dataSharing', 'Data Sharing'), body: t('privacy.dataSharingBody', 'We do not sell your personal information to third parties. We share your profile only with verified employers on our platform, and only when you apply for a job.') },
-    { title: t('privacy.yourRights', 'Your Rights'), body: t('privacy.yourRightsBody', 'You can request to view, update, or delete your personal information at any time by contacting our support team.') },
-    { title: t('privacy.contactUsTitle', 'Contact Us'), body: t('privacy.contactUsBody', 'For privacy-related concerns, write to us at privacy@naukaribazaar.in') },
+    {
+      title: t('privacy.scope', '1. Scope & Purpose'),
+      body: t('privacy.scopeBody', 'This Privacy Policy governs the data collection, storage, and processing practices for the Naukari Bazaar mobile application operated by 3HD Media. By using this application, you consent to the processing of your personal information as described herein.'),
+    },
+    {
+      title: t('privacy.infoCollect', '2. Information We Collect'),
+      body: t('privacy.infoCollectBody', 'We collect information necessary to facilitate employment connections. This includes contact details (name, phone number, email address, physical address), professional/employment details (education, skills, work experience, salary expectations, and job preferences), and optional verification details like government-issued identifiers if voluntarily uploaded to enhance profile credibility.'),
+    },
+    {
+      title: t('privacy.howUse', '3. How We Use Your Information'),
+      body: t('privacy.howUseBody', 'Your information is used to match you with matching job vacancies, verify profile authenticity, communicate transactional updates and alerts (via SMS, push notifications, and email), and provide customer support.'),
+    },
+    {
+      title: t('privacy.dataSharing', '4. Data Sharing & Disclosure'),
+      body: t('privacy.dataSharingBody', 'We do not sell, trade, or rent candidate personal data to third parties. We share candidate profiles exclusively with verified and registered employers on the platform, and only when you explicitly apply to their job listings or consent to matching.'),
+    },
+    {
+      title: t('privacy.dataSecurity', '5. Data Security & Storage'),
+      body: t('privacy.dataSecurityBody', 'We implement industry-standard technical and organizational security measures to protect your data. Any sensitive identification documents are encrypted in transit and stored on secure cloud databases.'),
+    },
+    {
+      title: t('privacy.userRights', '6. User Control & Data Deletion'),
+      body: t('privacy.userRightsBody', 'You can modify or update your personal details directly within your profile settings. If you wish to permanently delete your account and associated data, please contact our support team.'),
+    },
+    {
+      title: t('privacy.contactUsTitle', '7. Contact & Grievances'),
+      body: t('privacy.contactUsBody', 'For queries, privacy concerns, or data requests, please contact our Grievance Officer at info@3hdmedia.com.'),
+    },
   ];
 
   return (
@@ -93,7 +114,7 @@ export const PrivacyPolicyScreen: React.FC<{ onBack?: () => void }> = ({ onBack 
       <StatusBar barStyle={theme.isDark ? 'light-content' : 'dark-content'} />
       <BackHeader title={t('settings.privacy', 'Privacy Policy')} onBack={onBack} />
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={[styles.updated, { color: theme.colors.textMuted }]}>{t('privacy.lastUpdated', 'Last updated: June 2024')}</Text>
+        <Text style={[styles.updated, { color: theme.colors.textMuted }]}>{t('privacy.lastUpdated', 'Last updated: June 2026')}</Text>
         {sections.map((s, i) => (
           <View key={i} style={styles.policySection}>
             <Text style={[styles.policyTitle, { color: theme.colors.textPrimary }]}>{s.title}</Text>
@@ -111,12 +132,38 @@ export const TermsScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const { theme } = useTheme();
   const { t } = useTranslation();
   const terms = [
-    { title: t('terms.acceptance', 'Acceptance of Terms'), body: t('terms.acceptanceBody', 'By using Naukari Bazaar, you agree to these Terms and Conditions. Please read them carefully before using our services.') },
-    { title: t('terms.responsibilities', 'User Responsibilities'), body: t('terms.responsibilitiesBody', 'You are responsible for ensuring that all information you provide is accurate and up-to-date. Providing false information may result in account suspension.') },
-    { title: t('terms.prohibited', 'Prohibited Activities'), body: t('terms.prohibitedBody', 'You may not use Naukari Bazaar to post fraudulent information, harass other users, or engage in any illegal activities.') },
-    { title: t('terms.availability', 'Service Availability'), body: t('terms.availabilityBody', 'We aim to provide uninterrupted service but may occasionally need to perform maintenance. We are not liable for temporary service unavailability.') },
-    { title: t('terms.liability', 'Limitation of Liability'), body: t('terms.liabilityBody', 'Naukari Bazaar is not responsible for job outcomes, employer decisions, or any losses resulting from using our platform.') },
-    { title: t('terms.law', 'Governing Law'), body: t('terms.lawBody', 'These terms are governed by the laws of India. Any disputes shall be subject to the jurisdiction of Mumbai courts.') },
+    {
+      title: t('terms.acceptance', '1. Acceptance of Terms'),
+      body: t('terms.acceptanceBody', 'By downloading, installing, or accessing the Naukari Bazaar application, you agree to be bound by these Terms and Conditions. If you do not agree to these terms, you must immediately cease using the application.'),
+    },
+    {
+      title: t('terms.registration', '2. User Accounts & Eligibility'),
+      body: t('terms.registrationBody', 'You must be at least 18 years of age and legally competent to enter into contracts under applicable Indian law to register. You agree to provide accurate, truthful, and updated details in your profile. Misrepresentation or fraudulent profiles will result in immediate account termination.'),
+    },
+    {
+      title: t('terms.platformRole', '3. Platform Scope & Disclaimer'),
+      body: t('terms.platformRoleBody', 'Naukari Bazaar is an intermediary platform connecting job seekers with prospective employers. 3HD Media does not employ job seekers, nor does it guarantee employment, salary levels, or job conditions. We do not endorse or guarantee the validity of job postings or the conduct of employers. Users are advised to exercise caution and perform independent due diligence before accepting employment offers.'),
+    },
+    {
+      title: t('terms.prohibited', '4. Prohibited Uses'),
+      body: t('terms.prohibitedBody', 'Users shall not upload defamatory, offensive, or unlawful content, nor use the platform for spoofing, scraping, distribution of spam, or malicious software. Any form of harassment towards other users or employers is strictly prohibited.'),
+    },
+    {
+      title: t('terms.liability', '5. Limitation of Liability'),
+      body: t('terms.liabilityBody', 'To the fullest extent permitted by law, 3HD Media, Naukari Bazaar, and its officers shall not be liable for any direct, indirect, incidental, or consequential damages, or any loss of employment, wages, data, or business resulting from your use of the application.'),
+    },
+    {
+      title: t('terms.intellectualProperty', '6. Intellectual Property'),
+      body: t('terms.intellectualPropertyBody', 'All trademarks, logos, brand names, and source code associated with Naukari Bazaar are the intellectual property of 3HD Media. Unauthorized replication or usage is strictly prohibited.'),
+    },
+    {
+      title: t('terms.law', '7. Governing Law & Jurisdiction'),
+      body: t('terms.lawBody', 'These Terms and Conditions are governed by and construed in accordance with the laws of India. Any disputes arising out of or in connection with these terms shall be subject to the exclusive jurisdiction of the courts located in Mumbai, Maharashtra, India.'),
+    },
+    {
+      title: t('terms.contactUsTitle', '8. Contact Us'),
+      body: t('terms.contactUsBody', 'If you have any questions or feedback regarding these terms, please contact us at info@3hdmedia.com.'),
+    },
   ];
 
   return (
@@ -124,67 +171,11 @@ export const TermsScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
       <StatusBar barStyle={theme.isDark ? 'light-content' : 'dark-content'} />
       <BackHeader title={t('settings.terms', 'Terms & Conditions')} onBack={onBack} />
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={[styles.updated, { color: theme.colors.textMuted }]}>{t('terms.effective', 'Effective: June 2024')}</Text>
+        <Text style={[styles.updated, { color: theme.colors.textMuted }]}>{t('terms.effective', 'Effective: June 2026')}</Text>
         {terms.map((tRow, i) => (
           <View key={i} style={styles.policySection}>
             <Text style={[styles.policyTitle, { color: theme.colors.textPrimary }]}>{tRow.title}</Text>
             <Text style={[styles.policyBody, { color: theme.colors.textSecondary }]}>{tRow.body}</Text>
-          </View>
-        ))}
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-// ── About Company Screen ──────────────────────────────────────────────────────
-
-export const AboutCompanyScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
-  const { theme } = useTheme();
-  const { t } = useTranslation();
-
-  const stats = [
-    { label: t('about.workers', 'Workers Registered'), value: '2 Lakh+' },
-    { label: t('about.employers', 'Verified Employers'), value: '5,000+' },
-    { label: t('about.cities', 'Cities Covered'), value: '200+' },
-    { label: t('about.founded', 'Founded'), value: '2020' },
-  ];
-
-  return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: theme.colors.background }]}>
-      <StatusBar barStyle={theme.isDark ? 'light-content' : 'dark-content'} />
-      <BackHeader title={t('settings.about', 'About Company')} onBack={onBack} />
-      <ScrollView contentContainerStyle={styles.scroll}>
-        {/* Logo area */}
-        <View style={[styles.aboutHero, { backgroundColor: theme.colors.primaryLight }]}>
-          <Ionicons name="briefcase" size={48} color={theme.colors.primary} />
-          <Text style={[styles.aboutName, { color: theme.colors.primary }]}>{t('app.name', 'Naukari Bazaar')}</Text>
-          <Text style={[styles.aboutTagline, { color: theme.colors.textSecondary }]}>
-            {t('app.tagline', 'Connecting Workers with Opportunities')}
-          </Text>
-        </View>
-
-        {/* Stats */}
-        <View style={styles.statsGrid}>
-          {stats.map((s, i) => (
-            <View key={i} style={[styles.statBox, { backgroundColor: theme.colors.cardBackground, borderColor: theme.colors.cardBorder }]}>
-              <Text style={[styles.statVal, { color: theme.colors.primary }]}>{s.value}</Text>
-              <Text style={[styles.statLab, { color: theme.colors.textMuted }]}>{s.label}</Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Mission/Vision */}
-        {[
-          { title: t('about.mission', 'Our Mission'), icon: 'rocket-outline', text: t('about.missionText', 'To connect underprivileged workers across India with dignified employment opportunities.') },
-          { title: t('about.vision', 'Our Vision'), icon: 'eye-outline', text: t('about.visionText', 'A future where every willing worker has access to fair and meaningful work.') },
-          { title: t('about.values', 'Our Values'), icon: 'heart-outline', text: t('about.valuesText', 'Integrity, Inclusion, Empowerment. We believe in treating every worker with respect and enabling them to achieve economic independence.') },
-        ].map((item, i) => (
-          <View key={i} style={[styles.infoCard, { backgroundColor: theme.colors.cardBackground, borderColor: theme.colors.cardBorder }]}>
-            <View style={[styles.infoIcon, { backgroundColor: theme.colors.primaryLight }]}>
-              <Ionicons name={item.icon as any} size={22} color={theme.colors.primary} />
-            </View>
-            <Text style={[styles.infoTitle, { color: theme.colors.textPrimary }]}>{item.title}</Text>
-            <Text style={[styles.infoText, { color: theme.colors.textSecondary }]}>{item.text}</Text>
           </View>
         ))}
       </ScrollView>

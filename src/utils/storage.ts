@@ -186,8 +186,12 @@ if (Platform.OS !== 'web' && MMKVClass) {
       id: 'workerconnect-storage',
       encryptionKey: 'wc-secret-key-2024',
     });
-  } catch (e) {
-    console.warn('MMKV initialization failed, using AsyncStorage fallback:', e);
+  } catch (e: any) {
+    if (e?.message?.includes('native MMKV') || e?.message?.includes('MMKV Module')) {
+      console.log('MMKV native module not found (expected in Expo Go). Using AsyncStorage fallback.');
+    } else {
+      console.warn('MMKV initialization failed, using AsyncStorage fallback:', e);
+    }
   }
 }
 

@@ -3,7 +3,8 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, StatusBar, Linking } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, StatusBar, Linking } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
 import { contactService } from '../../services/api/contactService';
@@ -12,6 +13,7 @@ import { fontSize } from '../../theme/typography';
 
 const ContactUsScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
 
   const contacts = [
     {
@@ -39,23 +41,23 @@ const ContactUsScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
     {
       icon: 'mail-outline',
       title: 'Email',
-      detail: 'support@naukaribazaar.in',
+      detail: 'info@3hdmedia.com',
       subtitle: 'Reply within 24 hours',
-      action: () => Linking.openURL('mailto:support@naukaribazaar.in'),
+      action: () => Linking.openURL('mailto:info@3hdmedia.com'),
       color: '#2196F3',
     },
     {
       icon: 'globe-outline',
       title: 'Website',
-      detail: 'www.naukaribazaar.in',
+      detail: 'www.3hdmedia.com',
       subtitle: 'Resources & blog',
-      action: () => Linking.openURL('https://www.naukaribazaar.in'),
+      action: () => Linking.openURL('https://www.3hdmedia.com'),
       color: '#9C27B0',
     },
   ];
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: theme.colors.background }]}>
+    <View style={[styles.safe, { backgroundColor: theme.colors.background, paddingTop: insets.top }]}>
       <StatusBar barStyle={theme.isDark ? 'light-content' : 'dark-content'} />
       <View style={[styles.header, { borderBottomColor: theme.colors.divider }]}>
         {onBack && (
@@ -98,13 +100,13 @@ const ContactUsScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         <View style={[styles.officeCard, { backgroundColor: theme.colors.surfaceVariant }]}>
           <Text style={[styles.officeTitle, { color: theme.colors.textPrimary }]}>Registered Office</Text>
           <Text style={[styles.officeAddress, { color: theme.colors.textSecondary }]}>
-            Naukari Bazaar Pvt. Ltd.{'\n'}
-            123, Work Centre, Andheri East{'\n'}
-            Mumbai - 400069, Maharashtra, India
+            3HD Media{'\n'}
+            54, mamta 'A' Wing A.M Marg{'\n'}
+            Prabhadevi Mumbai : 400025
           </Text>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

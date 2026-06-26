@@ -1,22 +1,15 @@
 /**
- * WorkerConnect — Auth Navigator
- * Handles: Language Selection → Welcome → Login → OTP
+ * Naukri Bazaar — Auth Navigator
+ * Flow: Language Selection → Welcome → Login (direct, no OTP)
  */
 
 import React, { useState } from 'react';
-import { View } from 'react-native';
 import SplashScreen from '../screens/authentication/SplashScreen';
 import LanguageSelectionScreen from '../screens/authentication/LanguageSelectionScreen';
 import WelcomeScreen from '../screens/authentication/WelcomeScreen';
 import LoginScreen from '../screens/authentication/LoginScreen';
-import OTPVerificationScreen from '../screens/authentication/OTPVerificationScreen';
 
-type AuthStep =
-  | 'splash'
-  | 'language'
-  | 'welcome'
-  | 'login'
-  | 'otp';
+type AuthStep = 'splash' | 'language' | 'welcome' | 'login';
 
 interface AuthNavigatorProps {
   onAuthSuccess?: (isNew: boolean) => void;
@@ -24,17 +17,14 @@ interface AuthNavigatorProps {
 
 const AuthNavigator: React.FC<AuthNavigatorProps> = ({ onAuthSuccess }) => {
   const [step, setStep] = useState<AuthStep>('language');
-  const [phone, setPhone] = useState('');
 
   switch (step) {
     case 'splash':
-      return (
-        <SplashScreen onFinish={() => setStep('language')} />
-      );
+      return <SplashScreen onFinish={() => setStep('language')} />;
+
     case 'language':
-      return (
-        <LanguageSelectionScreen onContinue={() => setStep('welcome')} />
-      );
+      return <LanguageSelectionScreen onContinue={() => setStep('welcome')} />;
+
     case 'welcome':
       return (
         <WelcomeScreen
@@ -43,25 +33,16 @@ const AuthNavigator: React.FC<AuthNavigatorProps> = ({ onAuthSuccess }) => {
           onContinueWithPhone={() => setStep('login')}
         />
       );
+
     case 'login':
       return (
         <LoginScreen
-          onOTPSent={(p) => {
-            setPhone(p);
-            setStep('otp');
-          }}
+          onSuccess={(isNew) => onAuthSuccess?.(isNew)}
           onBack={() => setStep('welcome')}
           onRegister={() => setStep('login')}
         />
       );
-    case 'otp':
-      return (
-        <OTPVerificationScreen
-          phone={phone}
-          onSuccess={(isNew) => onAuthSuccess?.(isNew)}
-          onBack={() => setStep('login')}
-        />
-      );
+
     default:
       return null;
   }

@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Linking } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
 import { contactService } from '../../services/api/contactService';
@@ -8,6 +9,7 @@ import { textStyles } from '../../theme/typography';
 
 const SupportHomeScreen: React.FC = () => {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
 
   const handleCall = async () => {
     await contactService.logContact('CALL');
@@ -20,7 +22,7 @@ const SupportHomeScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top }]}>
       <View style={[styles.header, { backgroundColor: colors.surface }]}>
         <Text style={[styles.logo, { color: colors.primary }]}>Naukari Bazaar</Text>
       </View>
@@ -44,18 +46,6 @@ const SupportHomeScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.card, { backgroundColor: colors.surface }, shadows.base]}>
-          <TouchableOpacity style={styles.menuItem}>
-            <View style={[styles.iconCircle, { backgroundColor: colors.infoBackground }]}>
-              <Ionicons name="information-circle" size={24} color={colors.info} />
-            </View>
-            <View style={styles.menuContent}>
-              <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>Help Center</Text>
-              <Text style={[styles.menuSubtitle, { color: colors.textSecondary }]}>Browse articles & guides</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-          </TouchableOpacity>
-        </View>
 
         <View style={[styles.contactCard, { backgroundColor: colors.surface }, shadows.base]}>
           <View style={[styles.iconCircle, { backgroundColor: colors.successBackground }]}>
@@ -77,7 +67,7 @@ const SupportHomeScreen: React.FC = () => {
             
             <TouchableOpacity
               style={[styles.contactButton, { backgroundColor: colors.info }]}
-              onPress={() => Linking.openURL('mailto:support@naukaribazaar.in')}
+              onPress={() => Linking.openURL('mailto:info@3hdmedia.com')}
             >
               <Ionicons name="mail" size={18} color="white" />
               <Text style={styles.contactButtonText}>Email Us</Text>
@@ -95,7 +85,7 @@ const SupportHomeScreen: React.FC = () => {
           <Text style={[styles.hoursText, { color: colors.textMuted }]}>Mon-Sat: 9 AM - 6 PM</Text>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

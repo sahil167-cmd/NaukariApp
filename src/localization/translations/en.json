@@ -25,12 +25,16 @@
     "auth": {
       "login": "Login",
       "loginSubtitle": "Welcome back! Enter your mobile number.",
+      "loginSubtitleDirect": "Enter your mobile number to login or create your account",
       "phone": "Mobile Number",
       "phonePlaceholder": "Enter 10-digit mobile number",
       "password": "Password",
       "passwordPlaceholder": "Enter your password",
       "forgotPassword": "Forgot Password?",
       "sendOtp": "SEND OTP",
+      "loginDirect": "LOGIN / REGISTER",
+      "phoneHint": "10-digit Indian mobile number (e.g. 98XXXXXXXX)",
+      "privacy": "Your data is private and only accessible by you",
       "orLogin": "Or login with",
       "noAccount": "Don't have an account?",
       "signUp": "Sign Up"
@@ -317,7 +321,8 @@
       "confirmYes": "Yes",
       "confirmNo": "No",
       "callError": "Could not open dialer. Please call directly at: {{number}}",
-      "whatsappError": "Could not open WhatsApp. Please message directly at: {{number}}"
+      "whatsappError": "Could not open WhatsApp. Please message directly at: {{number}}",
+      "whatsappMessage": "Hello,\nI have successfully registered in the Naukari Bazaar application.\n\nMy Name: {{name}}\nMobile Number: {{phone}}\nPreferred Job Category: {{categories}}\nCity: {{city}}\n\nPlease guide me further regarding available jobs."
     }
   }
 }

@@ -10,11 +10,11 @@ import {
   FlatList,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
   StatusBar,
   RefreshControl,
   Linking,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -41,6 +41,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ onJobPress }) => {
   const { theme } = useTheme();
   const { user } = useAuthStore();
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
 
   // Retrieve dashboard analytics & live jobs from backend DB via react-query
   const { data, isLoading, isError, refetch, isRefetching } = useQuery({
@@ -108,7 +109,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ onJobPress }) => {
   ];
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: theme.colors.background }]}>
+    <View style={[styles.safe, { backgroundColor: theme.colors.background }]}>
       <StatusBar
         barStyle={theme.isDark ? 'light-content' : 'dark-content'}
         backgroundColor={theme.colors.background}
@@ -125,7 +126,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ onJobPress }) => {
         }
       >
         {/* Header */}
-        <View style={[styles.header, { backgroundColor: theme.colors.primary }]}>
+        <View style={[styles.header, { backgroundColor: theme.colors.primary, paddingTop: insets.top + spacing[4] }]}>
           <View>
             <Text style={styles.greeting}>{getGreeting()},</Text>
             <Text style={styles.userName}>
@@ -161,19 +162,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ onJobPress }) => {
           </TouchableOpacity>
         </View>
 
-        {/* Stats */}
-        <View style={styles.statsRow}>
-          {stats.map((stat, i) => (
-            <View
-              key={i}
-              style={[styles.statCard, { backgroundColor: theme.colors.cardBackground, borderColor: theme.colors.cardBorder }]}
-            >
-              <Ionicons name={stat.icon as any} size={20} color={theme.colors.primary} />
-              <Text style={[styles.statValue, { color: theme.colors.textPrimary }]}>{stat.value}</Text>
-              <Text style={[styles.statLabel, { color: theme.colors.textMuted }]}>{stat.label}</Text>
-            </View>
-          ))}
-        </View>
+
 
         {/* Contact Recruiter / Support Section */}
         <View style={[styles.supportCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.primary }]}>
@@ -242,7 +231,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ onJobPress }) => {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

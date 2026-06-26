@@ -4,9 +4,8 @@
 
 import React from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView,
-  StatusBar, Switch, Alert,
-} from 'react-native';
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, StatusBar, Switch, Alert} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -21,12 +20,11 @@ interface SettingsScreenProps {
   onNotifications: () => void;
   onPrivacyPolicy: () => void;
   onTerms: () => void;
-  onAboutCompany: () => void;
   onLanguageSelect: () => void;
 }
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({
-  onNotifications, onPrivacyPolicy, onTerms, onAboutCompany, onLanguageSelect,
+  onNotifications, onPrivacyPolicy, onTerms, onLanguageSelect,
 }) => {
   const { theme, toggleTheme, isDark } = useTheme();
   const { logout, user } = useAuthStore();
@@ -149,12 +147,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
           <Text style={[styles.sectionTitle, { color: theme.colors.textMuted }]}>{t('settings.legal', 'LEGAL & INFO')}</Text>
           <SettingRow icon="shield-outline" title={t('settings.privacy')} onPress={onPrivacyPolicy} />
           <SettingRow icon="document-text-outline" title={t('settings.terms')} onPress={onTerms} />
-          <SettingRow icon="business-outline" title={t('settings.about')} onPress={onAboutCompany} />
-          <SettingRow
-            icon="information-circle-outline"
-            title={t('settings.appVersion', 'App Version')}
-            subtitle={APP_VERSION}
-          />
         </View>
 
         {/* Logout */}

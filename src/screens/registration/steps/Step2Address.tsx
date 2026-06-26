@@ -47,21 +47,6 @@ const Step2Address: React.FC<Step2Props> = ({ initialData, onNext }) => {
       keyboardShouldPersistTaps="handled"
     >
       <Controller
-        name="houseNumber"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <AppTextInput
-            label={t('address.houseNumber')}
-            placeholder={t('address.housePlaceholder', 'e.g. A-12, Flat 3')}
-            value={value}
-            onChangeText={onChange}
-            error={errors.houseNumber?.message}
-            required
-            leftIcon="home-outline"
-          />
-        )}
-      />
-      <Controller
         name="streetAddress"
         control={control}
         render={({ field: { onChange, value } }) => (
@@ -74,19 +59,6 @@ const Step2Address: React.FC<Step2Props> = ({ initialData, onNext }) => {
             required
             leftIcon="map-outline"
             multiline
-          />
-        )}
-      />
-      <Controller
-        name="landmark"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <AppTextInput
-            label={t('address.landmark')}
-            placeholder={t('common.optional')}
-            value={value ?? ''}
-            onChangeText={onChange}
-            leftIcon="flag-outline"
           />
         )}
       />

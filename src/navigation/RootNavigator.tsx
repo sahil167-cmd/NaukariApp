@@ -31,10 +31,10 @@ const RootNavigator: React.FC = () => {
       i18n.changeLanguage(storedLang);
     }
 
-    // 3. Keep splash visible for 1200ms to allow a smooth, premium load animation
+    // 3. Keep splash visible for 3500ms to allow a smooth, premium load animation
     const timer = setTimeout(() => {
       setIsInitialized(true);
-    }, 1200);
+    }, 3500);
 
     return () => clearTimeout(timer);
   }, []);
