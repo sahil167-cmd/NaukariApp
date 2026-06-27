@@ -53,8 +53,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "workerconnect-001"
+        "projectId": "f044bcbe-04e7-4f48-a698-c2e667307871"
       }
-    }
+    },
+    "owner": "sahil167"
   }
 }
