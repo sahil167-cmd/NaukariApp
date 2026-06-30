@@ -8,11 +8,13 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { User, IUser } from '../models/User';
 
+import { config } from '../config/env.config';
+
 export interface AuthenticatedRequest extends Request {
   user?: IUser;
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkeyfornaukaribazaar';
+const JWT_SECRET = config.JWT_SECRET;
 
 /**
  * Protect middleware — strictly validates JWT and attaches req.user.
