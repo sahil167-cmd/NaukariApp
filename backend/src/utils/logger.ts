@@ -19,7 +19,7 @@ const colors = {
 winston.addColors(colors);
 
 // Log format to strip sensitive fields (JWT tokens, passwords, session secrets)
-const sanitizeFormat = winston.format((info) => {
+const sanitizeFormat = winston.format((info: any) => {
   const sanitize = (val: any): any => {
     if (typeof val !== 'object' || val === null) {
       if (typeof val === 'string') {
@@ -69,7 +69,7 @@ const format = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
   sanitizeFormat(),
   winston.format.printf(
-    (info) => `${info.timestamp} ${info.level.toUpperCase()}: ${typeof info.message === 'object' ? JSON.stringify(info.message) : info.message}`
+    (info: any) => `${info.timestamp} ${info.level.toUpperCase()}: ${typeof info.message === 'object' ? JSON.stringify(info.message) : info.message}`
   )
 );
 
@@ -78,7 +78,7 @@ const transports = [
     format: winston.format.combine(
       winston.format.colorize({ all: true }),
       winston.format.printf(
-        (info) => `${info.timestamp} ${info.level}: ${typeof info.message === 'object' ? JSON.stringify(info.message) : info.message}`
+        (info: any) => `${info.timestamp} ${info.level}: ${typeof info.message === 'object' ? JSON.stringify(info.message) : info.message}`
       )
     ),
   }),
