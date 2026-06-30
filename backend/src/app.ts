@@ -42,6 +42,14 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// Health Check Route
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "Backend Running Successfully"
+  });
+});
+
 // Mount API routes
 app.use('/api/v1', apiRouter);
 
