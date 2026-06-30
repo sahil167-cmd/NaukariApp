@@ -41,8 +41,8 @@ PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/naukari-bazaar
 JWT_SECRET=supersecretjwtkeyfornaukaribazaar
 JWT_REFRESH_SECRET=supersecretjwtrefreshkeyfornaukaribazaar
-SUPPORT_PHONE=8976478247
-SUPPORT_WHATSAPP=8976478247
+SUPPORT_PHONE=7506710665
+SUPPORT_WHATSAPP=7506710665
 APP_NAME=Naukari Bazaar
 ```
 
@@ -77,8 +77,8 @@ Create a new file named `.env` in the root folder. You must set the `API_BASE_UR
 1. Get your computer's IP address (e.g. run `ipconfig` and look for the IPv4 Address under your active Wi-Fi adapter).
 2. Set your root `.env` to:
    ```env
-   SUPPORT_PHONE=+918976478247
-   SUPPORT_WHATSAPP=+918976478247
+   SUPPORT_PHONE=+917506710665
+   SUPPORT_WHATSAPP=+917506710665
    API_BASE_URL=http://<YOUR_COMPUTER_IP>:5000/api/v1
    ```
 

@@ -13,12 +13,12 @@ const SupportHomeScreen: React.FC = () => {
 
   const handleCall = async () => {
     await contactService.logContact('CALL');
-    Linking.openURL('tel:+918976478247');
+    Linking.openURL('tel:+917506710665');
   };
 
   const handleWhatsApp = async () => {
     await contactService.logContact('WHATSAPP');
-    Linking.openURL('https://wa.me/918976478247');
+    Linking.openURL('https://wa.me/917506710665');
   };
 
   return (

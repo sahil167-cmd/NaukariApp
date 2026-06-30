@@ -35,10 +35,10 @@ const SupportScreen: React.FC<SupportScreenProps> = ({
     {
       icon: 'call',
       label: t('contact.phone', 'Call Us'),
-      value: '+91 89764 78247',
+      value: '+91 75067 10665',
       onPress: async () => {
         await contactService.logContact('CALL');
-        Linking.openURL('tel:+918976478247');
+        Linking.openURL('tel:+917506710665');
       },
     },
     {
@@ -47,7 +47,7 @@ const SupportScreen: React.FC<SupportScreenProps> = ({
       value: t('contact.whatsappChat', 'Chat on WhatsApp'),
       onPress: async () => {
         await contactService.logContact('WHATSAPP');
-        Linking.openURL('https://wa.me/918976478247');
+        Linking.openURL('https://wa.me/917506710665');
       },
     },
     {

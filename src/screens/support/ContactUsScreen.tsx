@@ -19,22 +19,22 @@ const ContactUsScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
     {
       icon: 'call-outline',
       title: 'Call Us',
-      detail: '+91 89764 78247',
+      detail: '+91 75067 10665',
       subtitle: 'Mon–Sat: 9 AM – 6 PM',
       action: async () => {
         await contactService.logContact('CALL');
-        Linking.openURL('tel:8976478247');
+        Linking.openURL('tel:7506710665');
       },
       color: '#4CAF50',
     },
     {
       icon: 'logo-whatsapp',
       title: 'WhatsApp',
-      detail: '+91 89764 78247',
+      detail: '+91 75067 10665',
       subtitle: 'Available 24/7',
       action: async () => {
         await contactService.logContact('WHATSAPP');
-        Linking.openURL('https://wa.me/918976478247');
+        Linking.openURL('https://wa.me/917506710665');
       },
       color: '#25D366',
     },

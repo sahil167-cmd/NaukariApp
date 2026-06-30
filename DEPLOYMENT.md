@@ -23,8 +23,8 @@ This document provides deployment guidelines for running Naukari Bazaar in produ
    MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/naukaribazaar?retryWrites=true&w=majority
    JWT_SECRET=YOUR_PRODUCTION_SECURE_JWT_SECRET
    JWT_REFRESH_SECRET=YOUR_PRODUCTION_SECURE_REFRESH_SECRET
-   SUPPORT_PHONE=8976478247
-   SUPPORT_WHATSAPP=8976478247
+   SUPPORT_PHONE=7506710665
+   SUPPORT_WHATSAPP=7506710665
    NODE_ENV=production
    ```
 

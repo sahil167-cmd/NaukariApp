@@ -43,9 +43,10 @@ export const config: EnvConfig = {
   JWT_REFRESH_SECRET: getEnvOrThrow('JWT_REFRESH_SECRET', isProduction, 'supersecretjwtrefreshkeyfornaukaribazaar'),
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
   JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN || '30d',
-  SUPPORT_PHONE: process.env.SUPPORT_PHONE || '8976478247',
-  SUPPORT_WHATSAPP: process.env.SUPPORT_WHATSAPP || '8976478247',
+  SUPPORT_PHONE: process.env.SUPPORT_PHONE || '7506710665',
+  SUPPORT_WHATSAPP: process.env.SUPPORT_WHATSAPP || '7506710665',
   ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS 
     ? process.env.ALLOWED_ORIGINS.split(',').map((o: string) => o.trim()) 
     : ['*'],
+  APP_VERSION: process.env.APP_VERSION || '1.0.0',
 };

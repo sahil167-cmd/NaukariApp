@@ -11,7 +11,7 @@ This document lists developer constraints, architecture fallbacks, and items tha
 ---
 
 ## 2. Permissive Local Development Auth Fallback
-* **Fallback Validation:** In `backend/src/middleware/authMiddleware.ts`, a permissive check automatically logs in a test user (`Raju Sharma` / `8976478247`) if no token or an invalid Bearer token is provided. This allows developers to test dashboard APIs and register workflows immediately in Metro Bundler without getting locked out.
+* **Fallback Validation:** In `backend/src/middleware/authMiddleware.ts`, a permissive check automatically logs in a test user (`Raju Sharma` / `7506710665`) if no token or an invalid Bearer token is provided. This allows developers to test dashboard APIs and register workflows immediately in Metro Bundler without getting locked out.
 * **Production Action:** The fallback mechanism MUST be commented out or set to trigger only when `NODE_ENV === 'development'` before staging deploy, to enforce strict JWT validation.
 
 ---

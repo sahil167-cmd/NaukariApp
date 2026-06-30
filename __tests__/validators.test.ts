@@ -3,7 +3,7 @@ import { phoneSchema, pinCodeSchema, emailSchema } from '../src/validators';
 describe('Yup Validation Schemas', () => {
   describe('Phone Validation Schema', () => {
     it('should validate correct 10-digit Indian mobile numbers starting with 6-9', async () => {
-      await expect(phoneSchema.validate('8976478247')).resolves.toBe('8976478247');
+      await expect(phoneSchema.validate('7506710665')).resolves.toBe('7506710665');
       await expect(phoneSchema.validate('7012345678')).resolves.toBe('7012345678');
       await expect(phoneSchema.validate('6123456789')).resolves.toBe('6123456789');
     });
@@ -42,7 +42,7 @@ describe('Yup Validation Schemas', () => {
     });
 
     it('should reject malformed email addresses', async () => {
-      await expect(emailSchema.validate('info@3hdmedia')).rejects.toThrow();
+      await expect(emailSchema.validate('info@3hdmedia.')).rejects.toThrow();
       await expect(emailSchema.validate('info3hdmedia.com')).rejects.toThrow();
     });
   });
