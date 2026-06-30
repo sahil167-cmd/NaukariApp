@@ -8,7 +8,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FDFBF7"
+      "backgroundColor": "#FFFFFF"
     },
     "userInterfaceStyle": "automatic",
     "sdkVersion": "54.0.0",
@@ -21,7 +21,7 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png",
-        "backgroundColor": "#E8621A"
+        "backgroundColor": "#D94F4F"
       },
       "package": "in.naukaribazaar.app",
       "versionCode": 1,
@@ -53,8 +53,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "workerconnect-001"
+        "projectId": "f044bcbe-04e7-4f48-a698-c2e667307871"
       }
-    }
+    },
+    "owner": "sahil167"
   }
 }

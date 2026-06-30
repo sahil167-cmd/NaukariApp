@@ -16,7 +16,6 @@ import DashboardScreen from '../screens/dashboard/DashboardScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
 import SupportScreen from '../screens/support/SupportScreen';
 import FAQScreen from '../screens/support/FAQScreen';
-import HelpScreen from '../screens/support/HelpScreen';
 import ContactUsScreen from '../screens/support/ContactUsScreen';
 import SettingsScreen from '../screens/settings/SettingsScreen';
 import LanguageSelectionScreen from '../screens/authentication/LanguageSelectionScreen';
@@ -24,11 +23,10 @@ import {
   NotificationsScreen,
   PrivacyPolicyScreen,
   TermsScreen,
-  AboutCompanyScreen,
 } from '../screens/settings/OtherSettingsScreens';
 
-type SupportSubScreen = 'home' | 'faq' | 'help' | 'contact';
-type SettingsSubScreen = 'home' | 'notifications' | 'privacy' | 'terms' | 'about' | 'language';
+type SupportSubScreen = 'home' | 'faq' | 'contact';
+type SettingsSubScreen = 'home' | 'notifications' | 'privacy' | 'terms' | 'language';
 
 const Tab = createBottomTabNavigator();
 
@@ -41,15 +39,12 @@ const SupportStack: React.FC = () => {
   const [screen, setScreen] = useState<SupportSubScreen>('home');
   switch (screen) {
     case 'faq': return <FAQScreen onBack={() => setScreen('home')} />;
-    case 'help': return <HelpScreen onBack={() => setScreen('home')} />;
     case 'contact': return <ContactUsScreen onBack={() => setScreen('home')} />;
     default:
       return (
         <SupportScreen
           onFAQ={() => setScreen('faq')}
-          onHelp={() => setScreen('help')}
           onContactUs={() => setScreen('contact')}
-          onAboutCompany={() => {}}
         />
       );
   }
@@ -62,7 +57,6 @@ const SettingsStack: React.FC = () => {
     case 'notifications': return <NotificationsScreen onBack={() => setScreen('home')} />;
     case 'privacy': return <PrivacyPolicyScreen onBack={() => setScreen('home')} />;
     case 'terms': return <TermsScreen onBack={() => setScreen('home')} />;
-    case 'about': return <AboutCompanyScreen onBack={() => setScreen('home')} />;
     case 'language': return <LanguageSelectionScreen onContinue={() => setScreen('home')} />;
     default:
       return (
@@ -70,7 +64,6 @@ const SettingsStack: React.FC = () => {
           onNotifications={() => setScreen('notifications')}
           onPrivacyPolicy={() => setScreen('privacy')}
           onTerms={() => setScreen('terms')}
-          onAboutCompany={() => setScreen('about')}
           onLanguageSelect={() => setScreen('language')}
         />
       );

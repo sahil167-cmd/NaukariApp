@@ -4,9 +4,9 @@
 
 import React from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, StatusBar,
-  Linking,
-} from 'react-native';
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, StatusBar,
+  Linking} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -16,32 +16,29 @@ import { fontSize } from '../../theme/typography';
 
 interface SupportScreenProps {
   onFAQ: () => void;
-  onHelp: () => void;
   onContactUs: () => void;
-  onAboutCompany: () => void;
 }
 
 const SupportScreen: React.FC<SupportScreenProps> = ({
-  onFAQ, onHelp, onContactUs, onAboutCompany,
+  onFAQ, onContactUs,
 }) => {
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 
   const menuItems = [
     { icon: 'help-circle-outline', title: t('support.faq'), subtitle: t('support.faqSubtitle', 'Frequently asked questions'), onPress: onFAQ, color: '#4CAF50' },
-    { icon: 'headset-outline', title: t('support.help'), subtitle: t('support.helpSubtitle', 'Step-by-step guidance'), onPress: onHelp, color: '#2196F3' },
     { icon: 'call-outline', title: t('support.contact'), subtitle: t('support.contactSubtitle', 'Reach our support team'), onPress: onContactUs, color: '#FF9800' },
-    { icon: 'business-outline', title: t('support.about', 'About Company'), subtitle: t('support.aboutSubtitle', 'Learn more about us'), onPress: onAboutCompany, color: '#9C27B0' },
   ];
 
   const quickActions = [
     {
       icon: 'call',
       label: t('contact.phone', 'Call Us'),
-      value: '+91 89764 78247',
+      value: '+91 75067 10665',
       onPress: async () => {
         await contactService.logContact('CALL');
-        Linking.openURL('tel:+918976478247');
+        Linking.openURL('tel:+917506710665');
       },
     },
     {
@@ -50,23 +47,23 @@ const SupportScreen: React.FC<SupportScreenProps> = ({
       value: t('contact.whatsappChat', 'Chat on WhatsApp'),
       onPress: async () => {
         await contactService.logContact('WHATSAPP');
-        Linking.openURL('https://wa.me/918976478247');
+        Linking.openURL('https://wa.me/917506710665');
       },
     },
     {
       icon: 'mail-outline',
       label: t('contact.email', 'Email'),
-      value: 'support@naukaribazaar.in',
-      onPress: () => Linking.openURL('mailto:support@naukaribazaar.in'),
+      value: 'info@3hdmedia.com',
+      onPress: () => Linking.openURL('mailto:info@3hdmedia.com'),
     },
   ];
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: theme.colors.background }]}>
+    <View style={[styles.safe, { backgroundColor: theme.colors.background }]}>
       <StatusBar barStyle={theme.isDark ? 'light-content' : 'dark-content'} />
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View style={[styles.header, { backgroundColor: theme.colors.primary }]}>
+        <View style={[styles.header, { backgroundColor: theme.colors.primary, paddingTop: insets.top + spacing[4] }]}>
           <Text style={styles.headerTitle}>{t('support.title')}</Text>
           <Text style={styles.headerSub}>{t('support.subtitle', "We're here to help you")}</Text>
         </View>
@@ -121,7 +118,7 @@ const SupportScreen: React.FC<SupportScreenProps> = ({
           </Text>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

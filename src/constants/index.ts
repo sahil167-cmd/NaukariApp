@@ -22,7 +22,7 @@ export const STORAGE_KEYS = {
 export const API_TIMEOUT = 30000;
 // API_BASE_URL is inlined from .env by Babel at build time.
 // Fallback: use LAN IP so physical devices/emulators can reach the backend.
-export const API_BASE_URL = process.env.API_BASE_URL || 'http://192.168.0.105:5000/api/v1';
+export const API_BASE_URL = process.env.API_BASE_URL || 'http://192.168.0.100:5000/api/v1';
 
 // OTP
 export const OTP_LENGTH = 6;
@@ -50,10 +50,22 @@ export type LanguageCode = typeof SUPPORTED_LANGUAGES[number]['code'];
 
 // Job Categories
 export const JOB_CATEGORIES = [
+  // Domestic & Home Care
+  'Baby Sitter',
+  'Nanny',
+  'Japa Maid',
+  'House Maid',
+  'Cook',
+  'Helper',
+  'Patient Care',
+  // Professional & Service
+  'Office Boy',
+  'Home Tuition',
+  'Restaurant Staff',
+  // General
   'Construction',
   'Manufacturing',
   'Logistics & Delivery',
-  'Domestic Help',
   'Security',
   'Hospitality',
   'Retail',

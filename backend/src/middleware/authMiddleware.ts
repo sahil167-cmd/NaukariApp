@@ -1,14 +1,27 @@
+/**
+ * Naukri Bazaar — Auth Middleware
+ * Production-grade JWT enforcement.
+ * Each user can ONLY access their own data — enforced via userId from JWT.
+ */
+
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { User, IUser } from '../models/User';
-import { Profile } from '../models/Profile';
+
+import { config } from '../config/env.config';
 
 export interface AuthenticatedRequest extends Request {
   user?: IUser;
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkeyfornaukaribazaar';
+const JWT_SECRET = config.JWT_SECRET;
 
+/**
+ * Protect middleware — strictly validates JWT and attaches req.user.
+ * If token is missing or invalid, responds with 401.
+ * Data isolation: every downstream query uses req.user._id,
+ * so one user can NEVER access another user's profile or data.
+ */
 export const protect = async (
   req: AuthenticatedRequest,
   res: Response,
@@ -20,82 +33,45 @@ export const protect = async (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
-    try {
-      token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
-      
-      const user = await User.findById(decoded.id);
-      if (user) {
-        req.user = user;
-        return next();
-      }
-    } catch (error) {
-      console.error('JWT Verification Error:', error);
-      // If token expired/invalid, continue to fallback instead of crashing or outright blocking in dev mode
-    }
+    token = req.headers.authorization.split(' ')[1];
   }
 
-  // Permissive Mode / Skipping authentication fallback:
-  // Dynamically find a user or create a seeded "test user" to prevent any frontend crashes
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: 'Authentication required. Please login to continue.',
+    });
+  }
+
   try {
-    let testUser = await User.findOne({ phone: '8976478247' });
-    if (!testUser) {
-      // Find any user at all
-      testUser = await User.findOne();
+    const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+
+    const user = await User.findById(decoded.id).select('-__v');
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not found. Please login again.',
+      });
     }
 
-    if (!testUser) {
-      // Seed a default test user
-      testUser = await User.create({
-        phone: '8976478247',
-        name: 'Raju Sharma',
-        isVerified: true,
-        registrationComplete: true,
-        registrationNumber: 'NB-2026-10001',
-        registrationDate: new Date(),
-      });
+    // Attach user to request — all protected routes use req.user._id for data isolation
+    req.user = user;
+    return next();
+  } catch (error: any) {
+    console.error('[Auth] JWT verification failed:', error.message);
 
-      // Create a matching profile
-      await Profile.create({
-        userId: testUser._id,
-        personal: {
-          firstName: 'Raju',
-          lastName: 'Sharma',
-          dob: '1995-06-15',
-          gender: 'Male',
-          phone: '8976478247',
-          email: 'raju.sharma@gmail.com',
-        },
-        address: {
-          houseNumber: '12',
-          streetAddress: 'MG Road',
-          city: 'Mumbai',
-          district: 'Mumbai Suburban',
-          state: 'Maharashtra',
-          pinCode: '400001',
-        },
-        jobPreferences: {
-          categories: ['Construction', 'Manufacturing'],
-          salaryRange: '₹10,000 - ₹15,000',
-          preferredLocations: ['Mumbai', 'Pune'],
-          shiftPreference: 'Day',
-          immediatelyAvailable: true,
-          willingToRelocate: false,
-        },
-        education: {
-          highestLevel: 'Secondary (10th Pass)',
-        },
-        experience: [],
-        documents: {},
-        completionPercentage: 65,
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Session expired. Please login again.',
+        code: 'TOKEN_EXPIRED',
       });
-      console.log('Seeded fallback test user and profile for permissive mode.');
     }
 
-    req.user = testUser;
-    next();
-  } catch (err) {
-    console.error('Auth Fallback Helper Error:', err);
-    res.status(401).json({ success: false, message: 'Authentication required' });
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid authentication token. Please login again.',
+      code: 'INVALID_TOKEN',
+    });
   }
 };

@@ -66,12 +66,6 @@ const ProfileScreen: React.FC = () => {
         : t('common.notAdded', 'Fresher / Not added'),
       completed: true,
     },
-    {
-      icon: 'document-text-outline',
-      title: t('profile.documents', 'Documents'),
-      subtitle: profile?.documents?.aadhaarNumber ? t('common.uploaded', 'Uploaded') : t('common.notUploaded', 'Not uploaded'),
-      completed: !!profile?.documents?.aadhaarNumber,
-    },
   ];
 
   if (isLoading) return <Loader message={t('profile.loading', 'Loading profile...')} />;

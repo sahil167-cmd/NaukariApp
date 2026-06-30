@@ -23,14 +23,14 @@ Initiates a mobile login session by sending an OTP. In development/testing, the 
 * **Request Body:**
   ```json
   {
-    "phone": "8976478247"
+    "phone": "7506710665"
   }
   ```
 * **Success Response (200 OK):**
   ```json
   {
     "success": true,
-    "message": "OTP sent successfully to +91 89764 78247",
+    "message": "OTP sent successfully to +91 75067 10665",
     "data": {
       "otp": "123456"
     }
@@ -61,7 +61,7 @@ Verifies the OTP sent to the user and returns an authentication token and detail
 * **Request Body:**
   ```json
   {
-    "phone": "8976478247",
+    "phone": "7506710665",
     "otp": "123456"
   }
   ```
@@ -74,7 +74,7 @@ Verifies the OTP sent to the user and returns an authentication token and detail
       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
       "user": {
         "id": "60c72b2f9b1d8b2d4c5c2d3a",
-        "phone": "8976478247",
+        "phone": "7506710665",
         "registrationStatus": "PENDING",
         "registrationComplete": false,
         "language": "en"
@@ -163,7 +163,7 @@ Retrieves the logged-in user's profile details.
       "personal": {
         "firstName": "Raju",
         "lastName": "Sharma",
-        "phone": "8976478247",
+        "phone": "7506710665",
         "gender": "Male",
         "dob": "12-05-1996"
       },
@@ -240,7 +240,7 @@ Loads statistics, application settings, registration numbers, user details, and 
     "data": {
       "user": {
         "id": "60c72b2f9b1d8b2d4c5c2d3a",
-        "phone": "8976478247",
+        "phone": "7506710665",
         "name": "Raju Sharma"
       },
       "summary": {

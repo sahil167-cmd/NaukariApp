@@ -62,7 +62,7 @@ export const personalDetailsSchema = Yup.object({
 });
 
 export const addressSchema = Yup.object({
-  houseNumber: Yup.string().required('House number is required'),
+  houseNumber: Yup.string().optional(),
   streetAddress: Yup.string()
     .required('Street address is required')
     .min(5, 'Minimum 5 characters'),
