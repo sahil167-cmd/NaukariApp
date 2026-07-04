@@ -7,10 +7,12 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User';
 import { Profile } from '../models/Profile';
+import { logger } from '../utils/logger';
 
 import { config } from '../config/env.config';
 
 const JWT_SECRET = config.JWT_SECRET;
+const JWT_REFRESH_SECRET = config.JWT_REFRESH_SECRET;
 const JWT_EXPIRES_IN = config.JWT_EXPIRES_IN;
 const JWT_REFRESH_EXPIRES_IN = config.JWT_REFRESH_EXPIRES_IN;
 
@@ -64,7 +66,7 @@ export const loginWithPhone = async (req: Request, res: Response) => {
     const accessToken = jwt.sign({ id: user._id, phone: user.phone }, JWT_SECRET, {
       expiresIn: JWT_EXPIRES_IN as any,
     });
-    const refreshToken = jwt.sign({ id: user._id }, JWT_SECRET, {
+    const refreshToken = jwt.sign({ id: user._id }, JWT_REFRESH_SECRET, {
       expiresIn: JWT_REFRESH_EXPIRES_IN as any,
     });
 
@@ -85,10 +87,12 @@ export const loginWithPhone = async (req: Request, res: Response) => {
           createdAt: user.createdAt,
         },
         isNew,
+        supportPhone: config.SUPPORT_PHONE,
+        supportWhatsapp: config.SUPPORT_WHATSAPP,
       },
     });
   } catch (error: any) {
-    console.error('[Auth] loginWithPhone error:', error);
+    logger.error('[Auth] loginWithPhone error:', { error: error.message });
     return res.status(500).json({
       success: false,
       message: 'Internal server error. Please try again.',
@@ -115,7 +119,7 @@ export const refreshToken = async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, message: 'Refresh token required' });
     }
 
-    const decoded: any = jwt.verify(token, JWT_SECRET);
+    const decoded: any = jwt.verify(token, JWT_REFRESH_SECRET);
     const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(401).json({ success: false, message: 'User not found' });

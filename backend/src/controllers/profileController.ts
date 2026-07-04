@@ -4,6 +4,7 @@ import { User } from '../models/User';
 import { Profile } from '../models/Profile';
 import { Job } from '../models/Job';
 import { ContactLog } from '../models/ContactLog';
+import { logger } from '../utils/logger';
 
 const calculateCompletion = (profile: any): number => {
   let score = 0;
@@ -33,7 +34,7 @@ export const getProfile = async (req: AuthenticatedRequest, res: Response) => {
       data: profile,
     });
   } catch (error: any) {
-    console.error('Get profile error:', error);
+    logger.error('Get profile error:', { error: error.message });
     return res.status(500).json({
       success: false,
       message: error.message || 'Internal server error',
@@ -71,7 +72,7 @@ export const updateProfile = async (req: AuthenticatedRequest, res: Response) =>
       data: profile,
     });
   } catch (error: any) {
-    console.error('Update profile error:', error);
+    logger.error('Update profile error:', { error: error.message });
     return res.status(500).json({
       success: false,
       message: error.message || 'Internal server error',
@@ -127,7 +128,7 @@ export const submitRegistration = async (req: AuthenticatedRequest, res: Respons
       message: 'Profile submitted successfully',
     });
   } catch (error: any) {
-    console.error('Submit registration error:', error);
+    logger.error('Submit registration error:', { error: error.message });
     return res.status(500).json({
       success: false,
       message: error.message || 'Internal server error',
@@ -182,7 +183,7 @@ export const getDashboard = async (req: AuthenticatedRequest, res: Response) => 
       },
     });
   } catch (error: any) {
-    console.error('Get dashboard error:', error);
+    logger.error('Get dashboard error:', { error: error.message });
     return res.status(500).json({
       success: false,
       message: error.message || 'Internal server error',

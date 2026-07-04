@@ -51,7 +51,7 @@ module.exports = function (api) {
                 obj.property.type === 'Identifier' &&
                 obj.property.name === 'env' &&
                 prop.type === 'Identifier' &&
-                (prop.name === 'SUPPORT_PHONE' || prop.name === 'SUPPORT_WHATSAPP' || prop.name === 'API_BASE_URL')
+                ['SUPPORT_PHONE', 'SUPPORT_WHATSAPP', 'API_BASE_URL', 'APP_NAME', 'APP_VERSION', 'SUPPORT_EMAIL', 'SUPPORT_WEBSITE', 'OFFICE_ADDRESS'].includes(prop.name)
               ) {
                 const value = envVars[prop.name] || '';
                 babelPath.replaceWith(t.stringLiteral(value));

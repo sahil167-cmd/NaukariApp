@@ -22,8 +22,7 @@ export const STORAGE_KEYS = {
 export const API_TIMEOUT = 30000;
 // API_BASE_URL is inlined from .env by Babel at build time.
 // Fallback: use LAN IP so physical devices/emulators can reach the backend.
-export const API_BASE_URL = process.env.API_BASE_URL || 'http://192.168.0.100:5000/api/v1';
-
+export const API_BASE_URL = 'https://naukari-backend-57cn.onrender.com/api/v1';
 // OTP
 export const OTP_LENGTH = 6;
 export const OTP_RESEND_SECONDS = 60;

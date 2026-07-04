@@ -30,10 +30,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     package: "in.naukaribazaar.app",
     versionCode: 1,
     permissions: [
-      "android.permission.CAMERA",
-      "android.permission.READ_EXTERNAL_STORAGE",
-      "android.permission.WRITE_EXTERNAL_STORAGE",
-      "android.permission.READ_MEDIA_IMAGES",
       "android.permission.VIBRATE"
     ]
   },
@@ -44,8 +40,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       "expo-image-picker",
       {
-        "photosPermission": "Allow Naukari Bazaar to access your photos for document uploads.",
-        "cameraPermission": "Allow Naukari Bazaar to use your camera to take document photos."
+        "photosPermission": "Allow Naukari Bazaar to access your photos for document uploads."
       }
     ],
     "expo-font"

@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../contexts/ThemeContext';
 import { contactService } from '../../services/api/contactService';
+import { CONFIG } from '../../config';
 import { spacing, layout, borderRadius } from '../../theme/spacing';
 import { fontSize } from '../../theme/typography';
 
@@ -38,7 +39,7 @@ const SupportScreen: React.FC<SupportScreenProps> = ({
       value: '+91 75067 10665',
       onPress: async () => {
         await contactService.logContact('CALL');
-        Linking.openURL('tel:+917506710665');
+        Linking.openURL(`tel:${CONFIG.SUPPORT_PHONE}`);
       },
     },
     {
@@ -47,14 +48,14 @@ const SupportScreen: React.FC<SupportScreenProps> = ({
       value: t('contact.whatsappChat', 'Chat on WhatsApp'),
       onPress: async () => {
         await contactService.logContact('WHATSAPP');
-        Linking.openURL('https://wa.me/917506710665');
+        Linking.openURL(`https://wa.me/${CONFIG.SUPPORT_WHATSAPP}`);
       },
     },
     {
       icon: 'mail-outline',
       label: t('contact.email', 'Email'),
-      value: 'info@3hdmedia.com',
-      onPress: () => Linking.openURL('mailto:info@3hdmedia.com'),
+      value: CONFIG.SUPPORT_EMAIL,
+      onPress: () => Linking.openURL(`mailto:${CONFIG.SUPPORT_EMAIL}`),
     },
   ];
 

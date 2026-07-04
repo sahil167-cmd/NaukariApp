@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
 import { contactService } from '../../services/api/contactService';
+import { CONFIG } from '../../config';
 import { spacing, layout, borderRadius } from '../../theme/spacing';
 import { fontSize } from '../../theme/typography';
 
@@ -23,7 +24,7 @@ const ContactUsScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
       subtitle: 'Mon–Sat: 9 AM – 6 PM',
       action: async () => {
         await contactService.logContact('CALL');
-        Linking.openURL('tel:7506710665');
+        Linking.openURL(`tel:${CONFIG.SUPPORT_PHONE}`);
       },
       color: '#4CAF50',
     },
@@ -34,24 +35,24 @@ const ContactUsScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
       subtitle: 'Available 24/7',
       action: async () => {
         await contactService.logContact('WHATSAPP');
-        Linking.openURL('https://wa.me/917506710665');
+        Linking.openURL(`https://wa.me/${CONFIG.SUPPORT_WHATSAPP}`);
       },
       color: '#25D366',
     },
     {
       icon: 'mail-outline',
       title: 'Email',
-      detail: 'info@3hdmedia.com',
+      detail: CONFIG.SUPPORT_EMAIL,
       subtitle: 'Reply within 24 hours',
-      action: () => Linking.openURL('mailto:info@3hdmedia.com'),
+      action: () => Linking.openURL(`mailto:${CONFIG.SUPPORT_EMAIL}`),
       color: '#2196F3',
     },
     {
       icon: 'globe-outline',
       title: 'Website',
-      detail: 'www.3hdmedia.com',
+      detail: CONFIG.SUPPORT_WEBSITE,
       subtitle: 'Resources & blog',
-      action: () => Linking.openURL('https://www.3hdmedia.com'),
+      action: () => Linking.openURL(`https://${CONFIG.SUPPORT_WEBSITE}`),
       color: '#9C27B0',
     },
   ];

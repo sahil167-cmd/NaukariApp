@@ -29,13 +29,15 @@ import { jobService } from '../../services/api/jobService';
 import { spacing, layout, borderRadius } from '../../theme/spacing';
 import { fontSize } from '../../theme/typography';
 import type { Job } from '../../types';
+import { CONFIG } from '../../config';
 
 interface DashboardScreenProps {
   onJobPress?: (job: Job) => void;
 }
 
-const SUPPORT_PHONE = process.env.SUPPORT_PHONE || '';
-const SUPPORT_WHATSAPP = process.env.SUPPORT_WHATSAPP || '';
+// Support phone numbers — sourced from CONFIG with reliable hardcoded fallbacks
+const SUPPORT_PHONE = CONFIG.SUPPORT_PHONE || '+917506710665';
+const SUPPORT_WHATSAPP = CONFIG.SUPPORT_WHATSAPP || '917506710665';
 
 const DashboardScreen: React.FC<DashboardScreenProps> = ({ onJobPress }) => {
   const { theme } = useTheme();
