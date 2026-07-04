@@ -36,7 +36,9 @@ apiClient.interceptors.request.use(
         config.headers.Authorization = `Bearer ${token}`;
       }
     } catch (e) {
-      console.warn('Failed to load auth token for request:', e);
+      if (__DEV__) {
+        console.warn('Failed to load auth token for request:', e);
+      }
     }
     return config;
   },
@@ -58,14 +60,49 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config;
     const requestId = originalRequest ? (originalRequest as any).requestId : null;
 
-    // Handle token expiration (401 Unauthorized)
+    // Handle token expiration (401 Unauthorized) — attempt refresh before logout
     if (error.response?.status === 401 && originalRequest && !originalRequest.headers['x-token-expired-retry']) {
       originalRequest.headers['x-token-expired-retry'] = 'true';
       try {
         const { useAuthStore } = require('../../store/authStore');
-        useAuthStore.getState().logout();
-      } catch (e) {
-        console.warn('Failed to logout on 401:', e);
+        const state = useAuthStore.getState();
+        const refreshToken = state.tokens?.refreshToken;
+
+        if (refreshToken) {
+          // Attempt silent token refresh
+          const refreshResponse = await axios.post(
+            `${API_BASE_URL}/auth/refresh-token`,
+            { refreshToken },
+            { headers: { 'Content-Type': 'application/json' } }
+          );
+
+          if (refreshResponse.data?.success && refreshResponse.data?.data?.accessToken) {
+            const newAccessToken = refreshResponse.data.data.accessToken;
+            const newExpiresAt = refreshResponse.data.data.expiresAt ?? (Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+            // Update store with new access token
+            state.setTokens({
+              accessToken: newAccessToken,
+              refreshToken: refreshToken,
+              expiresAt: newExpiresAt,
+            });
+
+            // Retry the original request with the new token
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            return apiClient(originalRequest);
+          }
+        }
+
+        // No refresh token or refresh failed — logout
+        state.logout();
+      } catch (refreshError) {
+        // Refresh failed entirely — logout
+        try {
+          const { useAuthStore } = require('../../store/authStore');
+          useAuthStore.getState().logout();
+        } catch (_) {
+          // Swallow errors during logout
+        }
       }
     }
 
@@ -75,7 +112,9 @@ apiClient.interceptors.response.use(
 
       if (retryCount < 3) {
         retryTracker.set(requestId, retryCount + 1);
-        console.log(`Network error. Retrying request (${retryCount + 1}/3) for ID: ${requestId}...`);
+        if (__DEV__) {
+          console.log(`Network error. Retrying request (${retryCount + 1}/3) for ID: ${requestId}...`);
+        }
         await new Promise((resolve) => setTimeout(resolve, 1000));
         return apiClient(originalRequest);
       } else {

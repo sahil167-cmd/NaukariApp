@@ -4,6 +4,7 @@ import { getProfile, updateProfile, submitRegistration, getDashboard } from '../
 import { getJobs, getJobById, applyForJob } from '../controllers/jobController';
 import { logContact } from '../controllers/contactController';
 import { protect } from '../middleware/authMiddleware';
+import { config } from '../config/env.config';
 
 const router = Router();
 
@@ -17,6 +18,17 @@ router.get('/health', (req, res) => {
 router.post('/auth/login', loginWithPhone);
 router.post('/auth/logout', logout);
 router.post('/auth/refresh-token', refreshToken);
+
+// ── Support Contact Info (Public) ────────────────────────────────────────────
+router.get('/support/info', (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: {
+      supportPhone: config.SUPPORT_PHONE,
+      supportWhatsapp: config.SUPPORT_WHATSAPP,
+    },
+  });
+});
 
 // ── Profile & Dashboard (Protected — JWT required) ───────────────────────────
 // All profile queries are filtered by userId from JWT → full data isolation

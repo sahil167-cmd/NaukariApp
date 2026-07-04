@@ -23,8 +23,9 @@ export const contactService = {
       });
       return response.data;
     } catch (error) {
-      console.error('Error logging support click interaction:', error);
-      // Silent error handling: do not disrupt the caller dialer or WhatsApp open flow
+      if (__DEV__) {
+        console.error('Error logging support click interaction:', error);
+      }
       return {
         success: false,
         message: 'Failed to write interaction logs',

@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/authMiddleware';
 import { ContactLog } from '../models/ContactLog';
+import { logger } from '../utils/logger';
 
 export const logContact = async (req: AuthenticatedRequest, res: Response) => {
   try {
@@ -37,7 +38,7 @@ export const logContact = async (req: AuthenticatedRequest, res: Response) => {
       message: 'Interaction logged successfully',
     });
   } catch (error: any) {
-    console.error('Log contact error:', error);
+    logger.error('Log contact error:', { error: error.message });
     return res.status(500).json({
       success: false,
       message: error.message || 'Internal server error',

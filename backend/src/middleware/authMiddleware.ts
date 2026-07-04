@@ -7,6 +7,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { User, IUser } from '../models/User';
+import { logger } from '../utils/logger';
 
 import { config } from '../config/env.config';
 
@@ -58,7 +59,7 @@ export const protect = async (
     req.user = user;
     return next();
   } catch (error: any) {
-    console.error('[Auth] JWT verification failed:', error.message);
+    logger.error('[Auth] JWT verification failed:', { error: error.message });
 
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({

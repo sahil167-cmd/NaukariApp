@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Job } from '../models/Job';
+import { logger } from '../utils/logger';
 
 export const getJobs = async (req: Request, res: Response) => {
   try {
@@ -30,7 +31,7 @@ export const getJobs = async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    console.error('Get jobs error:', error);
+    logger.error('Get jobs error:', { error: error.message });
     return res.status(500).json({
       success: false,
       message: error.message || 'Internal server error',
@@ -54,7 +55,7 @@ export const getJobById = async (req: Request, res: Response) => {
       data: job,
     });
   } catch (error: any) {
-    console.error('Get job by ID error:', error);
+    logger.error('Get job by ID error:', { error: error.message });
     return res.status(500).json({
       success: false,
       message: error.message || 'Internal server error',
@@ -80,7 +81,7 @@ export const applyForJob = async (req: Request, res: Response) => {
       message: 'Application submitted successfully',
     });
   } catch (error: any) {
-    console.error('Apply job error:', error);
+    logger.error('Apply job error:', { error: error.message });
     return res.status(500).json({
       success: false,
       message: error.message || 'Internal server error',

@@ -36,11 +36,14 @@ import Snackbar from '../../components/common/Snackbar';
 import { spacing, layout, borderRadius, shadows } from '../../theme/spacing';
 import { fontSize } from '../../theme/typography';
 
+import { CONFIG } from '../../config';
+
 const { width } = Dimensions.get('window');
 
-// Load environment variables dynamically inlined via Babel config
-const SUPPORT_PHONE = process.env.SUPPORT_PHONE || '';
-const SUPPORT_WHATSAPP = process.env.SUPPORT_WHATSAPP || '';
+// Support phone numbers — sourced from CONFIG with reliable hardcoded fallbacks
+// tel: URLs use +91 prefix, wa.me URLs use 91 prefix (no + sign)
+const SUPPORT_PHONE = CONFIG.SUPPORT_PHONE || '+917506710665';
+const SUPPORT_WHATSAPP = CONFIG.SUPPORT_WHATSAPP || '917506710665';
 
 const ContactRecruiterScreen: React.FC = () => {
   const { t } = useTranslation();
