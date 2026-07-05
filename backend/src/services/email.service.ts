@@ -1,6 +1,12 @@
+import dns from 'dns';
 import nodemailer from 'nodemailer';
 import { config } from '../config/env.config';
 import { logger } from '../utils/logger';
+
+// Force Node.js to resolve DNS with IPv4 first.
+// Render's network does not support IPv6 outbound to smtp.gmail.com,
+// and nodemailer's pool transport ignores the family:4 option.
+dns.setDefaultResultOrder('ipv4first');
 
 export class EmailService {
   private transporter: nodemailer.Transporter | null = null;
