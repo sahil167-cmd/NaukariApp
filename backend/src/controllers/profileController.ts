@@ -5,6 +5,7 @@ import { Profile } from '../models/Profile';
 import { Job } from '../models/Job';
 import { ContactLog } from '../models/ContactLog';
 import { logger } from '../utils/logger';
+import { recruitmentPipelineService } from '../services/recruitmentPipeline.service';
 
 const calculateCompletion = (profile: any): number => {
   let score = 0;
@@ -118,6 +119,13 @@ export const submitRegistration = async (req: AuthenticatedRequest, res: Respons
       user.name = `${personal.firstName} ${personal.lastName || ''}`.trim();
     }
     await user.save();
+
+    // Trigger recruitment pipeline automation (non-blocking / error-safe)
+    try {
+      await recruitmentPipelineService.processNewRegistration(user, profile, req.body);
+    } catch (pipelineErr: any) {
+      logger.error('Recruitment pipeline execution failed:', { error: pipelineErr.message });
+    }
 
     return res.status(200).json({
       success: true,

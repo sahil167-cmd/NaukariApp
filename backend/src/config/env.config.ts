@@ -12,6 +12,11 @@ export interface EnvConfig {
   SUPPORT_WHATSAPP: string;
   ALLOWED_ORIGINS: string[];
   APP_VERSION: string;
+  GOOGLE_SHEET_ID: string;
+  GOOGLE_SERVICE_ACCOUNT_JSON: string;
+  SMTP_EMAIL: string;
+  SMTP_APP_PASSWORD: string;
+  MANAGER_EMAIL: string;
 }
 
 const getEnvOrThrow = (key: string, isProduction: boolean, fallback?: string): string => {
@@ -49,4 +54,9 @@ export const config: EnvConfig = {
     ? process.env.ALLOWED_ORIGINS.split(',').map((o: string) => o.trim()) 
     : ['*'],
   APP_VERSION: process.env.APP_VERSION || '1.0.0',
+  GOOGLE_SHEET_ID: process.env.GOOGLE_SHEET_ID || '',
+  GOOGLE_SERVICE_ACCOUNT_JSON: process.env.GOOGLE_SERVICE_ACCOUNT_JSON || '',
+  SMTP_EMAIL: process.env.SMTP_EMAIL || '',
+  SMTP_APP_PASSWORD: process.env.SMTP_APP_PASSWORD || '',
+  MANAGER_EMAIL: process.env.MANAGER_EMAIL || '',
 };
