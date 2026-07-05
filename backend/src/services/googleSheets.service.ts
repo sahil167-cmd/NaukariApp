@@ -13,7 +13,7 @@ export class GoogleSheetsService {
 
   private init() {
     try {
-      const credentialsJson = config.GOOGLE_SERVICE_ACCOUNT_JSON;
+      let credentialsJson = config.GOOGLE_SERVICE_ACCOUNT_JSON;
       if (!credentialsJson) {
         logger.warn('GOOGLE_SERVICE_ACCOUNT_JSON env variable is not set. Google Sheets service will not function.');
         return;
@@ -23,19 +23,30 @@ export class GoogleSheetsService {
         return;
       }
 
+      // Defensively strip surrounding quotes if they were copied with them
+      credentialsJson = credentialsJson.trim();
+      if (credentialsJson.startsWith("'") && credentialsJson.endsWith("'")) {
+        credentialsJson = credentialsJson.slice(1, -1).trim();
+      } else if (credentialsJson.startsWith('"') && credentialsJson.endsWith('"')) {
+        credentialsJson = credentialsJson.slice(1, -1).trim();
+      }
+
       // Parse JSON credentials
       const credentials = JSON.parse(credentialsJson);
 
+      // Defensively replace literal escaped newlines with actual newlines in private key
+      const privateKey = credentials.private_key.replace(/\\n/g, '\n');
+
       const auth = new google.auth.JWT({
         email: credentials.client_email,
-        key: credentials.private_key,
+        key: privateKey,
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
       });
 
       this.sheets = google.sheets({ version: 'v4', auth });
       logger.info('Google Sheets service initialized successfully.');
     } catch (error: any) {
-      logger.error('Failed to initialize Google Sheets service:', { error: error.message });
+      logger.error(`Failed to initialize Google Sheets service: ${error.message}`);
     }
   }
 
@@ -56,7 +67,7 @@ export class GoogleSheetsService {
       });
       logger.info('Successfully appended registration row to Google Sheets.');
     } catch (error: any) {
-      logger.error('Failed to append row to Google Sheets:', { error: error.message });
+      logger.error(`Failed to append row to Google Sheets: ${error.message}`);
       throw error;
     }
   }

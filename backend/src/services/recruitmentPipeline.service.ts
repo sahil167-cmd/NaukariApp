@@ -121,7 +121,7 @@ export class RecruitmentPipelineService {
       logger.info(`Google Sheets Row Data for user ${mongoId}:`, { rowData });
       await googleSheetsService.appendRegistrationRow(rowData);
     } catch (sheetError: any) {
-      logger.error('Recruitment Pipeline - Google Sheets error:', { error: sheetError.message });
+      logger.error(`Recruitment Pipeline - Google Sheets error: ${sheetError.message}`);
     }
 
     // 2. Send Manager Email
@@ -146,7 +146,7 @@ export class RecruitmentPipelineService {
 
       await emailService.sendRegistrationEmail(config.MANAGER_EMAIL, emailDetails);
     } catch (emailError: any) {
-      logger.error('Recruitment Pipeline - Email error:', { error: emailError.message });
+      logger.error(`Recruitment Pipeline - Email error: ${emailError.message}`);
     }
     
     logger.info(`Finished recruitment pipeline process for user ${user._id}`);

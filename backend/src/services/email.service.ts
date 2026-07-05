@@ -28,7 +28,7 @@ export class EmailService {
       });
       logger.info('Nodemailer service initialized successfully.');
     } catch (error: any) {
-      logger.error('Failed to initialize Nodemailer service:', { error: error.message });
+      logger.error(`Failed to initialize Nodemailer service: ${error.message}`);
     }
   }
 
@@ -83,7 +83,7 @@ export class EmailService {
 
       logger.info(`Successfully sent registration email to ${emailTo}.`);
     } catch (error: any) {
-      logger.error('Failed to send registration email:', { error: error.message });
+      logger.error(`Failed to send registration email: ${error.message}`);
       throw error;
     }
   }

@@ -38,6 +38,8 @@ yarn-error.*
 .env.staging
 .env*.local
 backend/.env
+backend/secrets/
+
 
 # typescript
 *.tsbuildinfo
