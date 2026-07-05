@@ -59,7 +59,7 @@ export class GoogleSheetsService {
     try {
       await this.sheets.spreadsheets.values.append({
         spreadsheetId: this.spreadsheetId,
-        range: 'Sheet1!A:O',
+        range: 'A:O',
         valueInputOption: 'USER_ENTERED',
         requestBody: {
           values: [row],
@@ -67,7 +67,12 @@ export class GoogleSheetsService {
       });
       logger.info('Successfully appended registration row to Google Sheets.');
     } catch (error: any) {
-      logger.error(`Failed to append row to Google Sheets: ${error.message}`);
+      logger.error(`Failed to append row to Google Sheets: ${error.message} (code: ${error.code})`, {
+        code: error.code,
+        response: error.response?.data,
+        errors: error.errors,
+        stack: error.stack,
+      });
       throw error;
     }
   }

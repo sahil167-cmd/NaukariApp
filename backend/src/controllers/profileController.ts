@@ -120,12 +120,13 @@ export const submitRegistration = async (req: AuthenticatedRequest, res: Respons
     }
     await user.save();
 
-    // Trigger recruitment pipeline automation (non-blocking / error-safe)
-    try {
-      await recruitmentPipelineService.processNewRegistration(user, profile, req.body);
-    } catch (pipelineErr: any) {
-      logger.error('Recruitment pipeline execution failed:', { error: pipelineErr.message });
-    }
+    // Trigger recruitment pipeline asynchronously (non-blocking)
+    setImmediate(() => {
+      recruitmentPipelineService.processNewRegistration(user, profile, req.body)
+        .catch((err: any) => {
+          logger.error(`Recruitment pipeline background execution error: ${err.message}`);
+        });
+    });
 
     return res.status(200).json({
       success: true,

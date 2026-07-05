@@ -20,12 +20,30 @@ export class EmailService {
       }
 
       this.transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // Use STARTTLS on port 587
         auth: {
           user: email,
           pass: password,
         },
+        pool: true,
+        family: 4, // Force IPv4 to avoid Render IPv6 unreachable errors
+        requireTLS: true,
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 15000,
+      } as any);
+
+      // Verify connection config on startup
+      this.transporter.verify((error, success) => {
+        if (error) {
+          logger.error(`SMTP Transporter verification failed: ${error.message}`);
+        } else {
+          logger.info('SMTP Transporter verified and ready to send emails.');
+        }
       });
+
       logger.info('Nodemailer service initialized successfully.');
     } catch (error: any) {
       logger.error(`Failed to initialize Nodemailer service: ${error.message}`);
