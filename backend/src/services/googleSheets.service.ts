@@ -37,6 +37,8 @@ export class GoogleSheetsService {
       // Defensively replace literal escaped newlines with actual newlines in private key
       const privateKey = credentials.private_key.replace(/\\n/g, '\n');
 
+      logger.info(`Google Sheets: Authenticating as ${credentials.client_email} for sheet ${this.spreadsheetId}`);
+
       const auth = new google.auth.JWT({
         email: credentials.client_email,
         key: privateKey,
@@ -45,14 +47,38 @@ export class GoogleSheetsService {
 
       this.sheets = google.sheets({ version: 'v4', auth });
       logger.info('Google Sheets service initialized successfully.');
+
+      // Startup diagnostic: verify we can access the spreadsheet
+      this.verifyAccess();
     } catch (error: any) {
       logger.error(`Failed to initialize Google Sheets service: ${error.message}`);
     }
   }
 
+  private async verifyAccess() {
+    try {
+      const response = await this.sheets.spreadsheets.get({
+        spreadsheetId: this.spreadsheetId,
+        fields: 'properties.title,sheets.properties.title',
+      });
+      const title = response.data.properties?.title || 'Unknown';
+      const sheetNames = response.data.sheets?.map((s: any) => s.properties?.title).join(', ') || 'None';
+      logger.info(`Google Sheets verified: "${title}" with tabs: [${sheetNames}]`);
+    } catch (error: any) {
+      logger.error(`Google Sheets ACCESS VERIFICATION FAILED: ${error.message} (code: ${error.code})`);
+      if (error.code === 404) {
+        logger.error(`DIAGNOSIS: Spreadsheet ID "${this.spreadsheetId}" does not exist. Check GOOGLE_SHEET_ID env variable.`);
+      } else if (error.code === 403) {
+        logger.error(`DIAGNOSIS: Service account does not have access. Share the sheet with the service account email as Editor.`);
+      }
+      // Nullify sheets so we don't try to append
+      this.sheets = null;
+    }
+  }
+
   public async appendRegistrationRow(row: any[]) {
     if (!this.sheets || !this.spreadsheetId) {
-      logger.warn('Google Sheets service not initialized. Skipping row append.');
+      logger.warn('Google Sheets service not initialized or access denied. Skipping row append.');
       return;
     }
 
@@ -67,12 +93,7 @@ export class GoogleSheetsService {
       });
       logger.info('Successfully appended registration row to Google Sheets.');
     } catch (error: any) {
-      logger.error(`Failed to append row to Google Sheets: ${error.message} (code: ${error.code})`, {
-        code: error.code,
-        response: error.response?.data,
-        errors: error.errors,
-        stack: error.stack,
-      });
+      logger.error(`Failed to append row to Google Sheets: ${error.message} (code: ${error.code})`);
       throw error;
     }
   }
