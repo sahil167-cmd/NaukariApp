@@ -6,6 +6,7 @@ import app from './app';
 import { connectDB, disconnectDB } from './config/db';
 import { logger } from './utils/logger';
 import { config } from './config/env.config';
+import { selfTestService } from './services/selfTest.service';
 
 const PORT = config.PORT;
 
@@ -15,33 +16,57 @@ process.on('uncaughtException', (err: Error) => {
   process.exit(1);
 });
 
-// Connect to Database
-connectDB();
+let server: any;
 
-const server = app.listen(PORT, () => {
-  logger.info(`Server successfully started in ${config.NODE_ENV} mode on port ${PORT}`);
-});
+const bootstrap = async () => {
+  try {
+    // Connect to Database
+    await connectDB();
 
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err: any) => {
-  logger.error(`UNHANDLED REJECTION: ${err.message || err}`, { error: err });
-  // Close server & exit process
-  server.close(() => {
-    disconnectDB().finally(() => process.exit(1));
+    // Run startup health check verification
+    await selfTestService.runSelfTests();
+  } catch (err: any) {
+    logger.error(`Bootstrap process encountered failure: ${err.message}`, { error: err });
+  }
+
+  server = app.listen(PORT, () => {
+    logger.info(`Server successfully started in ${config.NODE_ENV} mode on port ${PORT}`);
   });
-});
+
+  // Handle unhandled promise rejections
+  process.on('unhandledRejection', (err: any) => {
+    logger.error(`UNHANDLED REJECTION: ${err.message || err}`, { error: err });
+    // Close server & exit process
+    if (server) {
+      server.close(() => {
+        disconnectDB().finally(() => process.exit(1));
+      });
+    } else {
+      disconnectDB().finally(() => process.exit(1));
+    }
+  });
+};
+
+bootstrap();
 
 // Graceful shutdown handler
 const gracefulShutdown = (signal: string) => {
   logger.warn(`Received ${signal}. Starting graceful shutdown procedure...`);
   
-  server.close(() => {
-    logger.info('Express server closed. Cleaning up database connection...');
+  if (server) {
+    server.close(() => {
+      logger.info('Express server closed. Cleaning up database connection...');
+      disconnectDB().finally(() => {
+        logger.info('Graceful shutdown completed successfully. Exiting.');
+        process.exit(0);
+      });
+    });
+  } else {
     disconnectDB().finally(() => {
       logger.info('Graceful shutdown completed successfully. Exiting.');
       process.exit(0);
     });
-  });
+  }
 
   // Force close after 10s if graceful shutdown hangs
   setTimeout(() => {

@@ -119,16 +119,8 @@ export const submitRegistration = async (req: AuthenticatedRequest, res: Respons
       user.name = `${personal.firstName} ${personal.lastName || ''}`.trim();
     }
     await user.save();
-
-    // Trigger recruitment pipeline asynchronously (non-blocking)
-    setImmediate(() => {
-      recruitmentPipelineService.processNewRegistration(user, profile, req.body)
-        .catch((err: any) => {
-          logger.error(`Recruitment pipeline background execution error: ${err.message}`);
-        });
-    });
-
-    return res.status(200).json({
+    // Send success response immediately so the client is not blocked
+    res.status(200).json({
       success: true,
       data: {
         profileId: profile._id,
@@ -136,6 +128,18 @@ export const submitRegistration = async (req: AuthenticatedRequest, res: Respons
       },
       message: 'Profile submitted successfully',
     });
+
+    // Trigger recruitment pipeline asynchronously (non-blocking background task)
+    setImmediate(() => {
+      recruitmentPipelineService.processNewRegistration(user, profile, req.body)
+        .catch((err: any) => {
+          logger.error(`Recruitment pipeline background execution error: ${err.message}`, {
+            stack: err.stack,
+          });
+        });
+    });
+
+    return;
   } catch (error: any) {
     logger.error('Submit registration error:', { error: error.message });
     return res.status(500).json({

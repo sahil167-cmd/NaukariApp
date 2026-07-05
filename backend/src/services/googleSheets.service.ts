@@ -5,7 +5,7 @@ import { logger } from '../utils/logger';
 export class GoogleSheetsService {
   private sheets: any = null;
   private spreadsheetId: string;
-  private authClient: any = null;
+  private serviceAccountEmail: string = '';
 
   constructor() {
     this.spreadsheetId = config.GOOGLE_SHEET_ID;
@@ -16,17 +16,11 @@ export class GoogleSheetsService {
     try {
       let credentialsJson = config.GOOGLE_SERVICE_ACCOUNT_JSON;
       if (!credentialsJson) {
-        logger.warn('GOOGLE_SERVICE_ACCOUNT_JSON env variable is not set. Google Sheets service will not function.');
-        return;
+        throw new Error('GOOGLE_SERVICE_ACCOUNT_JSON environment variable is not set.');
       }
       if (!this.spreadsheetId) {
-        logger.warn('GOOGLE_SHEET_ID env variable is not set. Google Sheets service will not function.');
-        return;
+        throw new Error('GOOGLE_SHEET_ID environment variable is not set.');
       }
-
-      // Log the first 50 chars of the env var for debugging (never log the full key)
-      logger.info(`GOOGLE_SERVICE_ACCOUNT_JSON starts with: "${credentialsJson.substring(0, 50)}..."`);
-      logger.info(`GOOGLE_SHEET_ID = "${this.spreadsheetId}"`);
 
       // Defensively strip surrounding quotes if they were copied with them
       credentialsJson = credentialsJson.trim();
@@ -41,80 +35,146 @@ export class GoogleSheetsService {
       try {
         credentials = JSON.parse(credentialsJson);
       } catch (parseError: any) {
-        logger.error(`FATAL: Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON as JSON: ${parseError.message}`);
-        logger.error(`First 100 chars of value: "${credentialsJson.substring(0, 100)}"`);
-        return;
+        throw new Error(`Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON as valid JSON: ${parseError.message}`);
       }
 
-      if (!credentials.client_email || !credentials.private_key) {
-        logger.error('FATAL: GOOGLE_SERVICE_ACCOUNT_JSON is missing client_email or private_key fields.');
-        return;
+      // Assert presence of client_email, private_key, project_id
+      const missingFields: string[] = [];
+      if (!credentials.client_email) missingFields.push('client_email');
+      if (!credentials.private_key) missingFields.push('private_key');
+      if (!credentials.project_id) missingFields.push('project_id');
+
+      if (missingFields.length > 0) {
+        throw new Error(`GOOGLE_SERVICE_ACCOUNT_JSON is missing required fields: ${missingFields.join(', ')}`);
       }
+
+      this.serviceAccountEmail = credentials.client_email;
 
       // Defensively replace literal escaped newlines with actual newlines in private key
       const privateKey = credentials.private_key.replace(/\\n/g, '\n');
 
-      logger.info(`Google Sheets: Authenticating as "${credentials.client_email}" for sheet "${this.spreadsheetId}"`);
-
-      this.authClient = new google.auth.JWT({
-        email: credentials.client_email,
+      const auth = new google.auth.JWT({
+        email: this.serviceAccountEmail,
         key: privateKey,
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
       });
 
-      this.sheets = google.sheets({ version: 'v4', auth: this.authClient });
-      logger.info('Google Sheets service initialized successfully.');
-
-      // Startup diagnostic: verify we can access the spreadsheet (non-blocking, informational only)
-      this.verifyAccess();
+      this.sheets = google.sheets({ version: 'v4', auth });
+      logger.info('Google Sheets service initialized.');
     } catch (error: any) {
-      logger.error(`Failed to initialize Google Sheets service: ${error.message}`);
-      logger.error(`Stack: ${error.stack}`);
+      logger.error(`Google Sheets initialization error: ${error.message}`, {
+        stack: error.stack,
+        spreadsheetId: this.spreadsheetId,
+        serviceAccountEmail: this.serviceAccountEmail,
+      });
+      throw error;
     }
   }
 
-  private async verifyAccess() {
+  public getServiceAccountEmail(): string {
+    return this.serviceAccountEmail;
+  }
+
+  public getSpreadsheetId(): string {
+    return this.spreadsheetId;
+  }
+
+  /**
+   * Automatically verifies if the spreadsheet exists, if the worksheet 'Sheet1' exists,
+   * and creates it if it is missing.
+   */
+  public async verifyAccessAndSheets(): Promise<{ spreadsheetTitle: string; worksheetName: string }> {
+    if (!this.sheets || !this.spreadsheetId) {
+      throw new Error('Google Sheets API client is not initialized.');
+    }
+
     try {
+      // 1. Fetch spreadsheet metadata
       const response = await this.sheets.spreadsheets.get({
         spreadsheetId: this.spreadsheetId,
         fields: 'properties.title,sheets.properties.title',
       });
+
       const title = response.data.properties?.title || 'Unknown';
-      const sheetNames = response.data.sheets?.map((s: any) => s.properties?.title).join(', ') || 'None';
-      logger.info(`Google Sheets VERIFIED OK: "${title}" with tabs: [${sheetNames}]`);
-    } catch (error: any) {
-      // DO NOT set this.sheets = null here! The sharing permission may be fixed later.
-      // Just log the diagnostic info.
-      logger.error(`Google Sheets ACCESS VERIFICATION FAILED: ${error.message} (code: ${error.code})`);
-      if (error.code === 404) {
-        logger.error(`DIAGNOSIS: Spreadsheet ID "${this.spreadsheetId}" was not found. Check GOOGLE_SHEET_ID env variable on Render.`);
-      } else if (error.code === 403) {
-        logger.error(`DIAGNOSIS: Service account does not have access. Share the Google Sheet with the service account email as Editor.`);
+      const sheetList = response.data.sheets || [];
+      const hasWorksheet = sheetList.some((s: any) => s.properties?.title === 'Sheet1');
+
+      if (!hasWorksheet) {
+        logger.warn(`Worksheet "Sheet1" is missing in spreadsheet "${this.spreadsheetId}". Attempting auto-creation...`);
+        try {
+          await this.sheets.spreadsheets.batchUpdate({
+            spreadsheetId: this.spreadsheetId,
+            requestBody: {
+              requests: [
+                {
+                  addSheet: {
+                    properties: {
+                      title: 'Sheet1',
+                    },
+                  },
+                },
+              ],
+            },
+          });
+          logger.info(`Successfully auto-created worksheet "Sheet1" in spreadsheet "${this.spreadsheetId}".`);
+        } catch (createErr: any) {
+          logger.error(`Failed to auto-create worksheet "Sheet1" in spreadsheet "${this.spreadsheetId}": ${createErr.message}`, {
+            error: createErr,
+            code: createErr.code,
+            response: createErr.response?.data,
+          });
+          throw createErr;
+        }
       }
+
+      return {
+        spreadsheetTitle: title,
+        worksheetName: 'Sheet1',
+      };
+    } catch (error: any) {
+      // Specialized error logging
+      if (error.code === 404) {
+        logger.error(`Google Sheets Check failed: Spreadsheet with ID "${this.spreadsheetId}" was not found. Please verify GOOGLE_SHEET_ID on Render.`);
+      } else if (error.code === 403) {
+        logger.error(`Google Sheets Check failed: Access Denied. Service Account "${this.serviceAccountEmail}" does not have access. Please share the Google Sheet with this email as Editor.`);
+      } else {
+        logger.error(`Google Sheets Access Check encountered error: ${error.message}`, {
+          code: error.code,
+          response: error.response?.data,
+          stack: error.stack,
+          spreadsheetId: this.spreadsheetId,
+          worksheetName: 'Sheet1',
+          serviceAccountEmail: this.serviceAccountEmail,
+        });
+      }
+      throw error;
     }
   }
 
   public async appendRegistrationRow(row: any[]) {
     if (!this.sheets || !this.spreadsheetId) {
-      logger.warn('Google Sheets service not initialized. Skipping row append.');
-      return;
+      throw new Error('Google Sheets client is not initialized.');
     }
 
     try {
       await this.sheets.spreadsheets.values.append({
         spreadsheetId: this.spreadsheetId,
-        range: 'A:O',
+        range: 'Sheet1!A:O',
         valueInputOption: 'USER_ENTERED',
         requestBody: {
           values: [row],
         },
       });
-      logger.info('Successfully appended registration row to Google Sheets.');
+      logger.info('Successfully appended registration row to Google Sheets worksheet "Sheet1".');
     } catch (error: any) {
-      logger.error(`Failed to append row to Google Sheets: ${error.message} (code: ${error.code})`);
-      if (error.response?.data) {
-        logger.error(`Google API response: ${JSON.stringify(error.response.data)}`);
-      }
+      logger.error(`Failed to append row to Google Sheets: ${error.message}`, {
+        code: error.code,
+        response: error.response?.data,
+        stack: error.stack,
+        spreadsheetId: this.spreadsheetId,
+        worksheetName: 'Sheet1',
+        serviceAccountEmail: this.serviceAccountEmail,
+      });
       throw error;
     }
   }

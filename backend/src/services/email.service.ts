@@ -3,13 +3,15 @@ import nodemailer from 'nodemailer';
 import { config } from '../config/env.config';
 import { logger } from '../utils/logger';
 
-// Force Node.js to resolve DNS with IPv4 first.
-// Render's network does not support IPv6 outbound to smtp.gmail.com,
-// and nodemailer's pool transport ignores the family:4 option.
+// Force Node.js to resolve DNS with IPv4 first globally.
+// This prevents Render from routing outbound requests through unsupported IPv6 paths.
 dns.setDefaultResultOrder('ipv4first');
 
 export class EmailService {
   private transporter: nodemailer.Transporter | null = null;
+  private smtpUser: string = '';
+  private smtpHost: string = 'smtp.gmail.com';
+  private smtpPort: number = 587;
 
   constructor() {
     this.init();
@@ -21,51 +23,86 @@ export class EmailService {
       const password = config.SMTP_APP_PASSWORD;
 
       if (!email || !password) {
-        logger.warn('SMTP_EMAIL or SMTP_APP_PASSWORD not set. Email service will not function.');
-        return;
+        throw new Error('SMTP_EMAIL or SMTP_APP_PASSWORD environment variable is not set.');
       }
 
-      this.transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false, // Use STARTTLS on port 587
+      this.smtpUser = email;
+
+      // Define production-safe non-pooled configuration using STARTTLS
+      const transportOpts = {
+        host: this.smtpHost,
+        port: this.smtpPort,
+        secure: false, // Must be false for port 587 (STARTTLS)
         auth: {
           user: email,
           pass: password,
         },
-        pool: true,
-        family: 4, // Force IPv4 to avoid Render IPv6 unreachable errors
+        pool: false, // Bypasses connection pool IPv6 resolution fallback behaviors
         requireTLS: true,
         connectionTimeout: 10000,
         greetingTimeout: 10000,
         socketTimeout: 15000,
-      } as any);
+      };
 
-      // Verify connection config on startup
-      this.transporter.verify((error, success) => {
+      this.transporter = nodemailer.createTransport(transportOpts as any);
+      logger.info('Nodemailer SMTP service initialized.');
+    } catch (error: any) {
+      logger.error(`Nodemailer SMTP initialization error: ${error.message}`, {
+        stack: error.stack,
+        smtpHost: this.smtpHost,
+        smtpPort: this.smtpPort,
+        smtpUser: this.smtpUser,
+      });
+      throw error;
+    }
+  }
+
+  public getSmtpUser(): string {
+    return this.smtpUser;
+  }
+
+  public getSmtpHost(): string {
+    return this.smtpHost;
+  }
+
+  public getSmtpPort(): number {
+    return this.smtpPort;
+  }
+
+  public async verifyTransporter(): Promise<void> {
+    if (!this.transporter) {
+      throw new Error('Nodemailer SMTP transporter is not initialized.');
+    }
+
+    return new Promise<void>((resolve, reject) => {
+      this.transporter!.verify((error, success) => {
         if (error) {
-          logger.error(`SMTP Transporter verification failed: ${error.message}`);
+          logger.error(`SMTP Transporter verification failed: ${error.message}`, {
+            error,
+            code: (error as any).code,
+            response: (error as any).response,
+            stack: error.stack,
+            smtpHost: this.smtpHost,
+            smtpPort: this.smtpPort,
+            smtpUser: this.smtpUser,
+          });
+          reject(error);
         } else {
           logger.info('SMTP Transporter verified and ready to send emails.');
+          resolve();
         }
       });
-
-      logger.info('Nodemailer service initialized successfully.');
-    } catch (error: any) {
-      logger.error(`Failed to initialize Nodemailer service: ${error.message}`);
-    }
+    });
   }
 
   public async sendRegistrationEmail(managerEmail: string, userDetails: Record<string, string>) {
     if (!this.transporter) {
-      logger.warn('Email service not initialized. Skipping registration email.');
-      return;
+      throw new Error('Email service not initialized.');
     }
 
     const emailTo = managerEmail || config.MANAGER_EMAIL;
     if (!emailTo) {
-      logger.warn('No manager email specified. Skipping registration email.');
-      return;
+      throw new Error('No manager email target specified.');
     }
 
     try {
@@ -107,7 +144,14 @@ export class EmailService {
 
       logger.info(`Successfully sent registration email to ${emailTo}.`);
     } catch (error: any) {
-      logger.error(`Failed to send registration email: ${error.message}`);
+      logger.error(`Failed to send registration email to ${emailTo}: ${error.message}`, {
+        code: error.code,
+        response: error.response,
+        stack: error.stack,
+        smtpHost: this.smtpHost,
+        smtpPort: this.smtpPort,
+        smtpUser: this.smtpUser,
+      });
       throw error;
     }
   }
