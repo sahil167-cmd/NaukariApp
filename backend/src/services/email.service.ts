@@ -1,17 +1,10 @@
-import dns from 'dns';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { config } from '../config/env.config';
 import { logger } from '../utils/logger';
 
-// Force Node.js to resolve DNS with IPv4 first globally.
-// This prevents Render from routing outbound requests through unsupported IPv6 paths.
-dns.setDefaultResultOrder('ipv4first');
-
 export class EmailService {
-  private transporter: nodemailer.Transporter | null = null;
-  private smtpUser: string = '';
-  private smtpHost: string = 'smtp.gmail.com';
-  private smtpPort: number = 587;
+  private resend: Resend | null = null;
+  private resendApiKey: string = '';
 
   constructor() {
     this.init();
@@ -19,88 +12,47 @@ export class EmailService {
 
   private init() {
     try {
-      const email = config.SMTP_EMAIL;
-      const password = config.SMTP_APP_PASSWORD;
-
-      if (!email || !password) {
-        throw new Error('SMTP_EMAIL or SMTP_APP_PASSWORD environment variable is not set.');
+      this.resendApiKey = config.RESEND_API_KEY;
+      if (!this.resendApiKey) {
+        logger.warn('RESEND_API_KEY environment variable is not set. Email service will not function.');
+        return;
       }
-
-      this.smtpUser = email;
-
-      // Define production-safe non-pooled configuration using STARTTLS
-      const transportOpts = {
-        host: this.smtpHost,
-        port: this.smtpPort,
-        secure: false, // Must be false for port 587 (STARTTLS)
-        auth: {
-          user: email,
-          pass: password,
-        },
-        pool: false, // Bypasses connection pool IPv6 resolution fallback behaviors
-        requireTLS: true,
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 15000,
-        lookup: (hostname: string, options: any, callback: any) => {
-          dns.lookup(hostname, { ...options, family: 4 }, callback);
-        },
-      };
-
-      this.transporter = nodemailer.createTransport(transportOpts as any);
-      logger.info('Nodemailer SMTP service initialized.');
+      this.resend = new Resend(this.resendApiKey);
+      logger.info('Resend Email service initialized successfully.');
     } catch (error: any) {
-      logger.error(`Nodemailer SMTP initialization error: ${error.message}`, {
+      logger.error(`Resend Email service initialization error: ${error.message}`, {
         stack: error.stack,
-        smtpHost: this.smtpHost,
-        smtpPort: this.smtpPort,
-        smtpUser: this.smtpUser,
       });
       throw error;
     }
   }
 
   public getSmtpUser(): string {
-    return this.smtpUser;
+    return 'Resend API Service';
   }
 
   public getSmtpHost(): string {
-    return this.smtpHost;
+    return 'api.resend.com';
   }
 
   public getSmtpPort(): number {
-    return this.smtpPort;
+    return 443;
   }
 
   public async verifyTransporter(): Promise<void> {
-    if (!this.transporter) {
-      throw new Error('Nodemailer SMTP transporter is not initialized.');
+    if (!this.resend || !this.resendApiKey) {
+      throw new Error('Resend client is not initialized.');
     }
-
-    return new Promise<void>((resolve, reject) => {
-      this.transporter!.verify((error, success) => {
-        if (error) {
-          logger.error(`SMTP Transporter verification failed: ${error.message}`, {
-            error,
-            code: (error as any).code,
-            response: (error as any).response,
-            stack: error.stack,
-            smtpHost: this.smtpHost,
-            smtpPort: this.smtpPort,
-            smtpUser: this.smtpUser,
-          });
-          reject(error);
-        } else {
-          logger.info('SMTP Transporter verified and ready to send emails.');
-          resolve();
-        }
-      });
-    });
+    // Verify connection by checking key format
+    if (!this.resendApiKey.startsWith('re_')) {
+      throw new Error('Invalid Resend API Key format. Must start with re_');
+    }
+    logger.info('Resend Email Client credentials format verified.');
   }
 
   public async sendRegistrationEmail(managerEmail: string, userDetails: Record<string, string>) {
-    if (!this.transporter) {
-      throw new Error('Email service not initialized.');
+    if (!this.resend) {
+      throw new Error('Resend Email service not initialized.');
     }
 
     const emailTo = managerEmail || config.MANAGER_EMAIL;
@@ -138,22 +90,28 @@ export class EmailService {
         </div>
       `;
 
-      await this.transporter.sendMail({
-        from: `"Naukari Bazaar" <${config.SMTP_EMAIL}>`,
+      // Note: Resend Free tier allows sending emails from 'onboarding@resend.dev'
+      // to the email address registered on the Resend account.
+      const fromEmail = 'onboarding@resend.dev';
+
+      logger.info(`Attempting to send registration email to ${emailTo} using Resend API...`);
+      const response = await this.resend.emails.send({
+        from: fromEmail,
         to: emailTo,
         subject: 'New Registration - Naukari Bazaar',
         html: htmlContent,
       });
 
-      logger.info(`Successfully sent registration email to ${emailTo}.`);
+      if (response.error) {
+        throw new Error(`Resend API Error: ${response.error.message} (${response.error.name})`);
+      }
+
+      logger.info(`Successfully sent registration email to ${emailTo} (ID: ${response.data?.id}).`);
     } catch (error: any) {
-      logger.error(`Failed to send registration email to ${emailTo}: ${error.message}`, {
+      logger.error(`Failed to send registration email to ${emailTo} using Resend: ${error.message}`, {
         code: error.code,
         response: error.response,
         stack: error.stack,
-        smtpHost: this.smtpHost,
-        smtpPort: this.smtpPort,
-        smtpUser: this.smtpUser,
       });
       throw error;
     }

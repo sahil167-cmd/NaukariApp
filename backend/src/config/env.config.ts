@@ -17,6 +17,7 @@ export interface EnvConfig {
   SMTP_EMAIL: string;
   SMTP_APP_PASSWORD: string;
   MANAGER_EMAIL: string;
+  RESEND_API_KEY: string;
 }
 
 const getEnvOrThrow = (key: string, isProduction: boolean, fallback?: string): string => {
@@ -59,4 +60,5 @@ export const config: EnvConfig = {
   SMTP_EMAIL: process.env.SMTP_EMAIL || '',
   SMTP_APP_PASSWORD: process.env.SMTP_APP_PASSWORD || '',
   MANAGER_EMAIL: process.env.MANAGER_EMAIL || '',
+  RESEND_API_KEY: process.env.RESEND_API_KEY || '',
 };
