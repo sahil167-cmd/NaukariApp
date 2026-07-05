@@ -42,6 +42,9 @@ export class EmailService {
         connectionTimeout: 10000,
         greetingTimeout: 10000,
         socketTimeout: 15000,
+        lookup: (hostname: string, options: any, callback: any) => {
+          dns.lookup(hostname, { ...options, family: 4 }, callback);
+        },
       };
 
       this.transporter = nodemailer.createTransport(transportOpts as any);

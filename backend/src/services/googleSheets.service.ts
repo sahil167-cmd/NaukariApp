@@ -8,7 +8,7 @@ export class GoogleSheetsService {
   private serviceAccountEmail: string = '';
 
   constructor() {
-    this.spreadsheetId = config.GOOGLE_SHEET_ID;
+    this.spreadsheetId = config.GOOGLE_SHEET_ID ? config.GOOGLE_SHEET_ID.trim() : '';
     this.init();
   }
 
