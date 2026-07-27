@@ -39,6 +39,8 @@ yarn-error.*
 .env*.local
 backend/.env
 backend/secrets/
+php-backend/.env
+php-backend/vendor/
 
 
 # typescript
