@@ -110,7 +110,7 @@ class AuthController
             Logger::error('[Auth] loginWithPhone error: ' . $error->getMessage());
             $response->getBody()->write(json_encode([
                 'success' => false,
-                'message' => 'Internal server error. Please try again.',
+                'message' => 'Server Error: ' . $error->getMessage(),
             ]));
             return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
         }
@@ -169,7 +169,7 @@ class AuthController
             return $response->withHeader('Content-Type', 'application/json');
 
         } catch (\Exception $error) {
-            $response->getBody()->write(json_encode(['success' => false, 'message' => 'Invalid or expired refresh token']));
+            $response->getBody()->write(json_encode(['success' => false, 'message' => 'Invalid or expired refresh token: ' . $error->getMessage()]));
             return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
         }
     }
