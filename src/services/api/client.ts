@@ -54,6 +54,15 @@ apiClient.interceptors.response.use(
     if (requestId) {
       retryTracker.delete(requestId);
     }
+    // Detect HTML error pages returned as 200 (GoDaddy server_misconfigured)
+    const contentType = response.headers?.['content-type'] ?? '';
+    if (contentType.includes('text/html')) {
+      return Promise.reject({
+        message: 'Server is temporarily unavailable. Please try again later.',
+        statusCode: 503,
+        errors: undefined,
+      });
+    }
     return response;
   },
   async (error: AxiosError) => {
@@ -122,8 +131,15 @@ apiClient.interceptors.response.use(
       }
     }
 
+    // If the error response is HTML (GoDaddy 500 page), give a clean message
+    const responseData = error.response?.data;
+    const isHtml = typeof responseData === 'string' && responseData.trim().startsWith('<');
+    const message = isHtml
+      ? 'Server is temporarily unavailable. Please try again later.'
+      : ((error.response?.data as any)?.message ?? error.message ?? 'Something went wrong');
+
     return Promise.reject({
-      message: (error.response?.data as any)?.message ?? error.message ?? 'Something went wrong',
+      message,
       statusCode: error.response?.status ?? 0,
       errors: (error.response?.data as any)?.errors,
     });
