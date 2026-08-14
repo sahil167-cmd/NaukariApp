@@ -2,7 +2,7 @@
   "expo": {
     "name": "Naukari Bazaar",
     "slug": "workerconnect",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -24,7 +24,7 @@
         "backgroundColor": "#D94F4F"
       },
       "package": "in.naukaribazaar.app",
-      "versionCode": 2,
+      "versionCode": 3,
       "usesCleartextTraffic": true,
       "permissions": [
         "android.permission.VIBRATE"
@@ -40,7 +40,8 @@
           "photosPermission": "Allow Naukari Bazaar to access your photos for document uploads."
         }
       ],
-      "expo-font"
+      "expo-font",
+      "./plugins/withNetworkSecurityConfig.js"
     ],
     "updates": {
       "enabled": false,
